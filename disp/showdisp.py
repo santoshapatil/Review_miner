@@ -9,3 +9,4 @@ def show(d):
     st.write("Extracted a total of ",cnt_rev)
     startd=d.Review_date[0]
     lastd=d.Review_date[-1]
+    

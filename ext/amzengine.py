@@ -10,7 +10,7 @@ import numpy as np
 #from flask import Flask, render_template, url_for, request
 from nltk.corpus import stopwords
 import streamlit as st
-nltk.download('stopwords')
+#nltk.download('stopwords')
 
 from nltk.stem import SnowballStemmer
 import pickle
@@ -145,8 +145,8 @@ def Review_extract(purl):
                                              "Review_date": D}))
                     return Reviews
 
-def main(url):
-  Review_extract(url)
+#def main(url):
+#Review_extract(url)
 
-if __name__ == '__main__':
-    main(ur)
+#if __name__ == '__main__':
+    #main(ur)
