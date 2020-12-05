@@ -11,7 +11,7 @@ import numpy as np
 from nltk.corpus import stopwords
 import streamlit as st
 #nltk.download('stopwords')
-import show from disp.showdisp as DB
+from disp.showdisp import show as DB
 from nltk.stem import SnowballStemmer
 import pickle
 from sklearn.cluster import KMeans
@@ -36,13 +36,8 @@ def main():
         if st.button('Analyze Reviews'):
             if "amazon.in" in product_url:
                 data=amz(product_url)
-                DP(data)
-                D=data.head()
-
-                cnt_rev=len(data)
-                st.dataframe(D)
-                st.write("Extracted a total of ",cnt_rev)
-
+                DB(data)
+                
 
             else:
                 st.text("Enter a amazon.in starting product URL")
