@@ -46,18 +46,19 @@ def getReviews(url, pg):
     r_h = []
     r_b = []
     r_t = []
-
+    r_s = []
     if page.status_code == 200:
         soup = BeautifulSoup(page.content, 'html.parser')
         r = soup.find('div', id="cm_cr-review_list")
 
         if r == "f":
-            return r_h, r_b, r_t, pg
+            return r_h, r_b, r_t,r_s, pg
         else:
 
             ty = soup.find('div', class_="a-section a-spacing-none review-views celwidget")
 
             rt = ty.find_all("a", {'data-hook': "review-title"})
+            stars=ty.find_all("span",{'data-hook': "review-star-rating"})
 
             for i in rt:
                 if i is None:
@@ -65,8 +66,13 @@ def getReviews(url, pg):
                 else:
                     v = i.get_text()
                     v = v.strip("\n")
-
                     r_h.append(v)
+
+
+            for star in stars:
+                s=star.get_text()
+                s=s.strip(" out of 5 stars")
+                r_s.append(s)
             rb = soup.find_all("span", {'data-hook': "review-body"})
             for i in rb:
                 if i is None:
@@ -88,11 +94,11 @@ def getReviews(url, pg):
             nextp = soup.find("ul", class_="a-pagination")
             npg = 0
             if (nextp.find("li", class_="a-disabled a-last")) is not None:
-                return r_h, r_b, r_t, npg
+                return r_h, r_b, r_t,r_s, npg
             elif (nextp.find("li", class_="a-last")) is not None:
 
                 npg = pg + 1
-                return r_h, r_b, r_t, npg
+                return r_h, r_b, r_t,r_s, npg
 
 
 def Review_extract(purl):
@@ -116,6 +122,7 @@ def Review_extract(purl):
                     H = []
                     B = []
                     D = []
+                    S = []
                     rev_link = getReview_link(st, p)
 
                     pg = 1
@@ -130,11 +137,13 @@ def Review_extract(purl):
                         r_t = []
                         r_h = []
                         r_b = []
-                        r_h, r_b, r_t, ntpg = getReviews(rev_link, pg)
+                        r_s = []
+                        r_h, r_b, r_t,r_s, ntpg = getReviews(rev_link, pg)
 
                         H.extend(r_h)
                         B.extend(r_b)
                         D.extend(r_t)
+                        S.extend(r_s)
                         if ntpg > pg:
                             pg = ntpg
                             continue
@@ -142,6 +151,7 @@ def Review_extract(purl):
                             break
                     Reviews = pd.DataFrame(({"Review_title": H,
                                              "Review_body": B,
+                                             "Review_rating":S,
                                              "Review_date": D}))
                     return Reviews
 

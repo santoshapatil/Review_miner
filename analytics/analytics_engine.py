@@ -59,19 +59,20 @@ def analyze_engine(Reviews):
    Reviews['cl_b']=Reviews['em_b'].apply(delete_notEnglish)
    Reviews['cl_t'].replace('', np.nan, inplace=True)
    Reviews['cl_b'].replace('', np.nan, inplace=True)
+   print("emoji,eng")
 
    Reviews.dropna(subset=['cl_t'], inplace=True)
    Reviews.dropna(subset=['cl_b'], inplace=True)
 
    Reviews['cl_t']=Reviews['cl_t'].apply(delete_punctuation)
    Reviews['cl_b']=Reviews['cl_b'].apply(delete_punctuation)
-
+   print("punctuation")
    Reviews['cl_t']=Reviews['cl_t'].apply(delete_stopwords)
    Reviews['cl_b']=Reviews['cl_b'].apply(delete_stopwords)
-
+   print("stopwords")
    Reviews['cl_t']=Reviews['cl_t'].apply(stemming)
    Reviews['cl_b']=Reviews['cl_b'].apply(stemming)
-
+   print("stem")
    Reviews['cl_t'].replace('', np.nan, inplace=True)
    Reviews['cl_b'].replace('', np.nan, inplace=True)
 
