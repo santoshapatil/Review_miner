@@ -12,3 +12,5 @@ def show(data):
     sd=date(day=startd.day, month=startd.month, year=startd.year).strftime('%d %B %Y')
     ld=date(day=lastd.day, month=lastd.month, year=lastd.year).strftime('%d %B %Y')
     st.write("Extracted Reviews from "+sd+" to "+ld)
+    return
+    

@@ -1,28 +1,17 @@
 
 from bs4 import BeautifulSoup
 import requests
-import emoji
-import nltk
-import enchant
-import pandas as pd
-from dateutil.parser import parse
-import numpy as np
-#from flask import Flask, render_template, url_for, request
-from nltk.corpus import stopwords
 import streamlit as st
-#nltk.download('stopwords')
-from disp.showdisp import show as DB
-from nltk.stem import SnowballStemmer
-import pickle
-from sklearn.cluster import KMeans
-from sklearn.feature_extraction.text import TfidfTransformer
-from sklearn.feature_extraction.text import CountVectorizer
-from sklearn.naive_bayes import MultinomialNB
-#from sklearn.externals import joblib
-import string
-import time
-from ext.amzengine import Review_extract as amz
 
+#from flask import Flask, render_template, url_for, request
+
+#nltk.download('stopwords')
+
+
+
+from ext.amzengine import Review_extract as amz
+from disp.showdisp import show as DB
+from analytics.analytics_engine import analyze_engine
 def main():
     st.title("Review Miner  ")
     st.text("By Santosh A Patil")
@@ -32,12 +21,13 @@ def main():
         st.subheader("Amazon.in")
         st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
         product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B07JWV47JW]")
-         # see *
+
         if st.button('Analyze Reviews'):
             if "amazon.in" in product_url:
                 data=amz(product_url)
                 DB(data)
-                
+                analyze_engine(data)
+
 
             else:
                 st.text("Enter a amazon.in starting product URL")
