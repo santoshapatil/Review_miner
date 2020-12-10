@@ -22,7 +22,7 @@ from sklearn.naive_bayes import MultinomialNB
 import string
 import time
 
-
+#"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner"
 def getReview_link(s, u):
     if s != "stop":
         cookie = {}
@@ -58,7 +58,7 @@ def getReviews(url, pg):
             ty = soup.find('div', class_="a-section a-spacing-none review-views celwidget")
 
             rt = ty.find_all("a", {'data-hook': "review-title"})
-            stars=ty.find_all("span",{'data-hook': "review-star-rating"})
+            stars=ty.find_all("i",{'data-hook': "review-star-rating"})
 
             for i in rt:
                 if i is None:
@@ -70,9 +70,16 @@ def getReviews(url, pg):
 
 
             for star in stars:
-                s=star.get_text()
-                s=s.strip(" out of 5 stars")
-                r_s.append(s)
+
+                if star is None:
+                    r_s.append(None)
+                else:
+                    s=star.get_text()
+                    s=s.strip(" out of 5 stars")
+                    s=float(s)
+                    r_s.append(s)
+
+
             rb = soup.find_all("span", {'data-hook': "review-body"})
             for i in rb:
                 if i is None:
@@ -149,10 +156,13 @@ def Review_extract(purl):
                             continue
                         else:
                             break
+
                     Reviews = pd.DataFrame(({"Review_title": H,
                                              "Review_body": B,
                                              "Review_rating":S,
                                              "Review_date": D}))
+                    
+                    #Reviews.to_csv("reviews.csv")
                     return Reviews
 
 #def main(url):
