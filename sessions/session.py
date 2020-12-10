@@ -21,6 +21,7 @@ def session_id(go):
     print(idd)
     #idd not in log_df["session_id"]:
     noww = datetime.datetime.now()
+
     noww=str(noww)
     fg={'session_id': [idd], 'session_time': [noww]}
     log_df.loc[len(log_df["session_id"])]=fg

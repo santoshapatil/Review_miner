@@ -17,19 +17,26 @@ from analytics.analytics_engine import analyze_engine
 from sessions.session import session_id
 from sessions.action import action_log
 from sessions.Review_db import rev_warehouse
-
-def rev_db(product_url,l_date_time,Reviews):
-    rev=Reviews.copy()
-    rev["l_date_time"]=l_date_time
-    rev["Product_url"]=product_url
-    return rev
+#from pages.home import home_page
 def main():
     go=1
     lid,l_date_time=session_id(go)
     st.title("Review Miner  ")
     st.text("By Santosh A Patil")
-    marketplace = ["amazon.in","flipkart.in","swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"]
-    choice = st.sidebar.selectbox("Select Marketplace",marketplace)
+    pages = ["Home","How to"]
+    page = st.sidebar.selectbox("Select Page",pages)
+    if page == "Home":
+        #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
+        marketplace = ["amazon.in","flipkart.in","swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"]
+        c1,c2 = st.beta_columns((1,3))
+        with c1:
+            choice = st.selectbox("Select Marketplace",marketplace)
+        with c2:
+            product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B07JWV47JW]")
+
+        st.text("https://www.amazon.in/Cello-Non-Stick-Cavity-Appam-Stainless/dp/B08DRBCPBM/ref=cm_cr_arp_d_product_top?ie=UTF8")
+
+
     if choice == "amazon.in":
         st.subheader("Amazon.in")
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
@@ -45,8 +52,7 @@ def main():
                     #(lid,product_url,l_date_time,data)
                     DB(data)
                     analyze_engine(data)
-                    rev=rev_db(product_url,l_date_time,data)
-                    rev_warehouse(rev)
+                    rev_warehouse(product_url,l_date_time,data)
 
 
 
