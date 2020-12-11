@@ -75,7 +75,7 @@ def getReviews(url, pg):
                     r_s.append(None)
                 else:
                     s=star.get_text()
-                    s=s.strip(" out of 5 stars")
+                    s=s.strip("out of 5 stars")
                     s=float(s)
                     r_s.append(s)
 

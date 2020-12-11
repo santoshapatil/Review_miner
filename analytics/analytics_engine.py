@@ -33,9 +33,9 @@ def delete_emoji(text):
   #d = enchant.Dict("en_US")
   #clean_text=' '.join([x for x in text.split() if d.check(x)==True])
   #return clean_text
-#def delete_punctuation(text):
-  #clean_text=''.join([p for p in text if p not in string.punctuation])
-  #return clean_text
+def delete_punctuation(text):
+  clean_text=''.join([p for p in text if p not in string.punctuation])
+  return clean_text
 
 
 # definie function to delete stop words
@@ -99,8 +99,10 @@ def analyze_engine(Reviews):
 
    st.subheader("Most Common Words")
    with st.beta_expander('Click to maximize-->'):
+       st.beta_container():
+       
        num=st.slider("No. of Frequent Words",min_value=5, max_value=20, value=5)
-       st.cache()
+
        words_df = pd.DataFrame(counts_words.most_common(num),
                              columns=['words', 'count'])
        st.dataframe(words_df)
