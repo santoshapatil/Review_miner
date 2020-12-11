@@ -56,19 +56,18 @@ def main():
     if page == "Home":
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
         marketplace = ["amazon.in","flipkart.in","swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"]
-        c1,c2,c3 = st.beta_columns((1,3,1))
+        c1,c2 = st.beta_columns((1,4))
         with c1:
             choice = st.selectbox("Select Marketplace",marketplace,key="marketplace")
         with c2:
             product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B07JWV47JW]")
-        with c3:
-            st.button('Analyze Reviews',key="go")
+
 
 
 
     if choice == "amazon.in":
         st.subheader("Amazon.in")
-        if st.button('Analyze Reviews') == "go":
+        if st.button("Analyze Reviews",key="go"):
             if "amazon.in" in product_url:
                 with st.spinner('Crawling Amazon to get reviews'):
                     data=amz(product_url)
