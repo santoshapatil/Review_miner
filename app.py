@@ -22,9 +22,36 @@ def main():
     go=1
     lid,l_date_time=session_id(go)
     st.title("Review Miner  ")
-    st.text("By Santosh A Patil")
+    #st.text("By Santosh A Patil")
     pages = ["Home","How to"]
     page = st.sidebar.selectbox("Select Page",pages)
+    st.sidebar.title("Key Idea")
+    st.sidebar.info(
+        """
+        Know what people felt about what you are about to buy
+
+        """
+        )
+    st.sidebar.title("About")
+    st.sidebar.info(
+    """
+        This a Web ML App to help you make a data driven decision before you
+        click purchase button while shopping online.
+        We sincerely thank Amazon,Flipkart and other digital market places
+        to let this app get reviews from their website."
+
+        """
+    )
+    st.sidebar.title("Key Idea")
+    st.sidebar.info(
+        """
+        Know what people felt about what you are about to buy
+
+        """
+    )
+
+
+
     if page == "Home":
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
         marketplace = ["amazon.in","flipkart.in","swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"]
@@ -60,30 +87,7 @@ def main():
                 st.text("Enter a amazon.in starting product URL")
         else:
             st.write("Press the above button..")
-    st.sidebar.title("Key Idea")
-    st.sidebar.info(
-        """
-        Know what people felt about what you are about to buy
 
-        """
-        )
-    st.sidebar.title("About")
-    st.sidebar.info(
-    """
-        This a Web ML App to help you make a data driven decision before you
-        click purchase button while shopping online.
-        We sincerely thank Amazon,Flipkart and other digital market places
-        to let this app get reviews from their website."
-
-        """
-    )
-    st.sidebar.title("Key Idea")
-    st.sidebar.info(
-        """
-        Know what people felt about what you are about to buy
-
-        """
-    )
 
 if __name__ == '__main__':
 	main()
