@@ -25,25 +25,26 @@ def main():
     #st.text("By Santosh A Patil")
     pages = ["Home","How to"]
     page = st.sidebar.selectbox("Select Page",pages)
-    st.sidebar.title("Key Idea")
-    st.sidebar.info(
+    with:
+        st.sidebar.title("Key Idea")
+        st.sidebar.info(
         """
         Know what people felt about what you are about to buy
 
         """
         )
-    st.sidebar.title("About")
-    st.sidebar.info(
-    """
+        st.sidebar.title("About")
+        st.sidebar.info(
+        """
         This a Web ML App to help you make a data driven decision before you
         click purchase button while shopping online.
         We sincerely thank Amazon,Flipkart and other digital market places
         to let this app get reviews from their website."
 
         """
-    )
-    st.sidebar.title("Key Idea")
-    st.sidebar.info(
+        )
+        st.sidebar.title("Key Idea")
+        st.sidebar.info(
         """
         Know what people felt about what you are about to buy
 
@@ -67,7 +68,6 @@ def main():
     if choice == "amazon.in":
         st.subheader("Amazon.in")
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
-        st.text("https://www.amazon.in/Cello-Non-Stick-Cavity-Appam-Stainless/dp/B08DRBCPBM/ref=cm_cr_arp_d_product_top?ie=UTF8")
         product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B07JWV47JW]")
 
         if st.button('Analyze Reviews'):
