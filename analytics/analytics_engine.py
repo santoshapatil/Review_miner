@@ -1,6 +1,6 @@
 import emoji
 import nltk
-import enchant
+#import enchant
 import pandas as pd
 from dateutil.parser import parse
 import numpy as np
@@ -28,14 +28,14 @@ def delete_emoji(text):
   clean_text = ' '.join([st for st in text.split() if not any(i in st for i in emoji_list)])
   return clean_text
 
-def delete_notEnglish(text):
-  english_words = []
-  d = enchant.Dict("en_US")
-  clean_text=' '.join([x for x in text.split() if d.check(x)==True])
-  return clean_text
-def delete_punctuation(text):
-  clean_text=''.join([p for p in text if p not in string.punctuation])
-  return clean_text
+#def delete_notEnglish(text):
+  #english_words = []
+  #d = enchant.Dict("en_US")
+  #clean_text=' '.join([x for x in text.split() if d.check(x)==True])
+  #return clean_text
+#def delete_punctuation(text):
+  #clean_text=''.join([p for p in text if p not in string.punctuation])
+  #return clean_text
 
 
 # definie function to delete stop words

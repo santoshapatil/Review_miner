@@ -3,7 +3,7 @@ from bs4 import BeautifulSoup
 import requests
 import emoji
 import nltk
-import enchant
+#import enchant
 import pandas as pd
 from dateutil.parser import parse
 import numpy as np
@@ -161,7 +161,7 @@ def Review_extract(purl):
                                              "Review_body": B,
                                              "Review_rating":S,
                                              "Review_date": D}))
-                    
+
                     #Reviews.to_csv("reviews.csv")
                     return Reviews
 
