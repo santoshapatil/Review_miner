@@ -25,16 +25,16 @@ def main():
     #st.text("By Santosh A Patil")
     pages = ["Home","How to"]
     page = st.sidebar.selectbox("Select Page",pages)
-    with:
-        st.sidebar.title("Key Idea")
-        st.sidebar.info(
-        """
+
+    st.sidebar.title("Key Idea")
+    st.sidebar.info(
+    """
         Know what people felt about what you are about to buy
 
-        """
-        )
-        st.sidebar.title("About")
-        st.sidebar.info(
+    """
+    )
+    st.sidebar.title("About")
+    st.sidebar.info(
         """
         This a Web ML App to help you make a data driven decision before you
         click purchase button while shopping online.
@@ -43,8 +43,8 @@ def main():
 
         """
         )
-        st.sidebar.title("Key Idea")
-        st.sidebar.info(
+    st.sidebar.title("Key Idea")
+    st.sidebar.info(
         """
         Know what people felt about what you are about to buy
 
