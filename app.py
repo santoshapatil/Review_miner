@@ -49,7 +49,7 @@ def main():
         Know what people felt about what you are about to buy
 
         """
-    )
+        )
 
 
 
@@ -62,12 +62,11 @@ def main():
         with c2:
             product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B07JWV47JW]")
 
-        st.text("https://www.amazon.in/Cello-Non-Stick-Cavity-Appam-Stainless/dp/B08DRBCPBM/ref=cm_cr_arp_d_product_top?ie=UTF8")
+
 
 
     if choice == "amazon.in":
         st.subheader("Amazon.in")
-        #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
         product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B07JWV47JW]")
 
         if st.button('Analyze Reviews'):
