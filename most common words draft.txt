@@ -1,0 +1,46 @@
+st.subheader("Most Common Words with time")
+   with st.beta_expander('Click to maximize-->'):
+        with st.beta_container():
+
+
+            typ=["Year","Quarter","Month"]
+            typch=st.radio("Frequent Words with respect to",typ)
+            if typch=="Year":
+                for index, row in y["text"].iterrows():
+                    Val=["5","10","15"]
+                    num=st.radio("No. of Frequent Words",Val)
+                    if num=="5":
+                        words_df = pd.DataFrame(counts_words.most_common(5),columns=['words', 'count'])
+                        st.table(words_df)
+                    elif num=="10":
+                        words_df = pd.DataFrame(counts_words.most_common(10),columns=['words', 'count'])
+                        st.table(words_df)
+                    else:
+                        words_df = pd.DataFrame(counts_words.most_common(15),columns=['words', 'count'])
+                        st.table(words_df)
+
+
+
+
+
+
+            elif typch=="10":
+                words_df = pd.DataFrame(counts_words.most_common(10),columns=['words', 'count'])
+                st.table(words_df)
+            else:
+                words_df = pd.DataFrame(counts_words.most_common(15),columns=['words', 'count'])
+                st.table(words_df)
+
+
+
+
+
+   #st.subheader("Most Common Words by Year/Month")
+   #with st.beta_expander('Click to maximize-->'):
+       #options={'Year', 'Month'}
+       #opt=streamlit.radio(label, options)
+
+
+
+   #w=[]
+   #def print_col(w,i):

@@ -42,7 +42,7 @@ def getReviews(url, pg):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'}
 
     ur = url + "&pageNumber=" + str(pg) + "&sortBy=recent"
-    page = requests.get(ur, cookies=cookie, headers=header)
+    page = requests.get(ur, cookies=cookie, headers=header, timeout=2.5)
     r_h = []
     r_b = []
     r_t = []

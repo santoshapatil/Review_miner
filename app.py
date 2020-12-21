@@ -18,10 +18,11 @@ from sessions.session import session_id
 from sessions.action import action_log
 from sessions.Review_db import rev_warehouse
 #from pages.home import home_page
+
 def main():
     go=1
     lid,l_date_time=session_id(go)
-    st.title("Review Miner  ")
+    st.title("intmood")
     #st.text("By Santosh A Patil")
     pages = ["Home","How to"]
     page = st.sidebar.selectbox("Select Page",pages,key="page")
@@ -62,9 +63,6 @@ def main():
         with c2:
             product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B07JWV47JW]")
 
-
-
-
     if choice == "amazon.in":
         st.subheader("Amazon.in")
         if st.button("Analyze Reviews",key="go"):
@@ -75,9 +73,10 @@ def main():
                     action_log(lid,choice,product_url)
                     #(lid,product_url,l_date_time,data)
                     DB(data)
+
                     analyze_engine(data)
                     rev_warehouse(product_url,l_date_time,data)
-
+                    st.info("that's all for now")
 
 
             else:

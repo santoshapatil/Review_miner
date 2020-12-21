@@ -1,0 +1,138 @@
+import matplotlib.pyplot as plt
+
+import plotly.graph_objects as go
+import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
+import plotly.express as px
+import calendar
+import datetime
+#del after checking
+from textblob import TextBlob
+import pandas as pd
+
+def get_sentiment(text):
+  blob = TextBlob(text)
+  result = blob.sentiment.polarity
+  return result
+
+
+def vide_meter(polarity):
+    fig = go.Figure(go.Indicator(
+    domain = {'x': [0, 1], 'y': [0, 1]},
+    value = polarity,
+    mode = "gauge+number",
+    #title={'text': "<h1>Vibe Meter</h1><p>Red -&gt; Poor Vibe</p><p>White -&gt; Neutral Vibe</p><p>Green -&gt; Good Vibe</p>"},
+    title = {'text':"<b>Vibe Score</b><br><span style='color: orange; font-size:5'>RED is not okay, WHITE is Neutral,GREY is Good </span>",'font': {"size": 14}
+             },
+    gauge = {'axis': {'range': [-1, 1]},
+             'steps' : [
+                  {'range': [-1,-0.2], 'color': "red",'name':"Not Okay"},
+                  {'range': [-0.2,0.2], 'color': "white",'name':"Not Okay"},
+                  {'range': [0.2, 1], 'color': "lightgray",'name':"Not Okay"}]
+             }))
+    fig.update_layout(paper_bgcolor = "beige", font = {'color': "darkblue", 'family': "Arial"})
+
+    return fig
+def moji(pol):
+  if pol > 0.5 :
+    custom_emoji = ':smile:'
+    p=emoji.emojize(custom_emoji,use_aliases=True)
+
+  elif pol <0.5 and pol>0:
+    custom_emoji = ':unamused:'
+    p=emoji.emojize(custom_emoji,use_aliases=True)
+
+  elif pol >-0.5 and pol<0:
+    custom_emoji = ':flushed:'
+    p=emoji.emojize(custom_emoji,use_aliases=True)
+
+  else:
+    custom_emoji = ':disappointed:'
+    p=emoji.emojize(custom_emoji,use_aliases=True)
+  return p
+def vibe_plot(rev_data):
+    rev_data["year"]=rev_data['Review_date'].dt.year
+    rev_data["quarter"]=rev_data['Review_date'].dt.quarter
+    rev_data["month"]=rev_data['Review_date'].dt.month
+
+    rev_data["Polarity"]=rev_data["text"].apply(get_sentiment)
+    yind=rev_data.pivot_table(index="year",values="Polarity",aggfunc='mean')
+    mind=rev_data.pivot_table(index=["year","month"],values="Polarity",aggfunc='mean')
+    quind=rev_data.pivot_table(index=["year","quarter"],values="Polarity",aggfunc='mean')
+    yind["No. of Reviews"]=rev_data.groupby("year",sort=False)["text"].count()
+    mind["No. of Reviews"]=rev_data.groupby([rev_data["year"],rev_data["month"]],sort=False)["text"].count()
+    quind["No. of Reviews"]=rev_data.groupby([rev_data["year"],rev_data["quarter"]],sort=False)["text"].count()
+    quind=quind.reset_index()
+    mind=mind.reset_index()
+    quind['DATE'] =quind['year'].astype(str) + ' Q' + quind['quarter'].astype(str)
+    mind["DATE"]=pd.to_datetime(mind[['year', 'month']].assign(DAY=1))
+
+
+
+
+    rev_data["Polarity"]=rev_data["text"].apply(get_sentiment)# del this line
+    yind=rev_data.pivot_table(index="year",values="Polarity",aggfunc='mean')
+    mind=rev_data.pivot_table(index=["year","month"],values="Polarity",aggfunc='mean')
+    quind=rev_data.pivot_table(index=["year","quarter"],values="Polarity",aggfunc='mean')
+
+    rev_data['Review_date']= pd.to_datetime(rev_data['Review_date'])
+    st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+    by_Val=["By Year","By Quarter"]
+    mode=st.radio("Select :",by_Val)
+    # this after testing
+    #rev_data["text"] = rev_data[['Review_title','Review_body']].apply(lambda x: ' '.join(x), axis=1)
+
+    y=rev_data.groupby("year",sort=False)["text"].apply(lambda x: ' '.join(x)).reset_index()
+    y["polarity"]=y["text"].apply(get_sentiment)
+
+    q=rev_data.groupby([rev_data["year"],rev_data["quarter"]],sort=False)["text"].apply(lambda x: ' '.join(x)).reset_index()
+    q['DATE'] =q['year'].astype(str) + ' Q' + q['quarter'].astype(str)
+    q["polarity"]=q["text"].apply(get_sentiment)
+
+    rev_data["month"]=rev_data['Review_date'].dt.month
+    m=rev_data.groupby("year","month",sort=False)["text"].apply(lambda x: ' '.join(x)).reset_index()
+    m['DATE'] = pd.to_datetime(m[['year', 'month']].assign(DAY=1))
+    m["polarity"]=m["text"].apply(get_sentiment)
+
+    #by individual Score
+
+
+    if mode =="By Year":
+        year_sel=y.index
+        year=st.radio("Select Year",year_sel)
+        for index,row in y.iterrows():
+            if row["year"]==year:
+                vibe_m=vide_meter(row["polarity"])
+                st.plotly_chart(vibe_m)
+        for index,row in yind.iterrows():
+            if row["year"]==year:
+                vibe_m=vide_meter(row["Polarity"])
+                st.plotly_chart(vibe_m)
+
+
+    else:
+
+        qa_sel=q.index
+        qs=st.radio("Select Year",qa_sel)
+        for index,row in q.iterrows():
+            if row["DATE"]==qs:
+                vibe_m=vide_meter(row["polarity"])
+                st.plotly_chart(vibe_m)
+
+    st.subheader("Vibe Score in the Past:")
+    st.info("After reading the reviews,we gave a score for each one of them and here is what people have vibed across.")
+    Val_ac=["By Year","By Quarter","By Month"]
+    mode_ac=st.radio("Select :",Val_ac)
+    if mode =="By Year":
+        fig = px.bar(y, x="year", y="polarity",width=600, height=400, range_y=[-1,1])#,animation_frame="year", animation_group="polarity, range_y=[0,4000000000]
+        st.plotly_chart(fig)
+    elif mode=="By Quarter":
+        figq = px.bar(q, x="DATE", y="polarity",color="DATE",width=600, height=400, range_y=[-1,1])#,animation_frame="year", animation_group="polarity, range_y=[0,4000000000]
+        st.plotly_chart(figq)
+    else:
+        figm = px.bar(m, x="DATE", y="polarity",color="DATE",width=600, height=400, range_y=[-1,1])#,animation_frame="year", animation_group="polarity, range_y=[0,4000000000]
+        st.plotly_chart(figm)
+Reviews=pd.read_csv(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\reviews.csv")
+print("read")
+vibe_plot(Reviews)

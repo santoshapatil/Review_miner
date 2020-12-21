@@ -21,6 +21,31 @@ matplotlib.use("Agg")
 import string
 import time
 import collections
+from textblob import TextBlob
+from spellchecker import SpellChecker
+from autocorrect import Speller
+from ipywidgets import widgets
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.widgets import Slider, Button, RadioButtons
+spell=Speller(lang='en')
+#from autocorrect import spell
+check = Speller(lang='en')
+#streamlit run analytics_engine.py
+#spell = SpellChecker()
+#from temp.temp_data import temp_data
+from analytics.vibe_meter import vibe_plot
+from analytics.sentiment_score import sentiment_par
+
+#del after checking
+from textblob import TextBlob
+import pandas as pd
+
+def get_sentiment(text):
+  blob = TextBlob(text)
+  result = blob.sentiment.polarity
+  return result
+
 
 def delete_emoji(text):
   allchars = text
@@ -37,6 +62,17 @@ def delete_punctuation(text):
   clean_text=''.join([p for p in text if p not in string.punctuation])
   return clean_text
 
+#st.cache()
+#def spelling_correction(text):
+    #print(text)
+    #if check(text):
+        #print("correct")
+        #return text
+    #else:
+        #print("incorrect")
+        #clean_text =spell(text)
+        #print(clean_text)
+        #return clean_text
 
 # definie function to delete stop words
 def delete_stopwords(text):
@@ -53,23 +89,29 @@ def stemming(text):
   return words
 def analyze_engine(Reviews):
    Reviews.dropna(subset=['Review_rating'], inplace=True)
-
+   Reviews['Review_date']= pd.to_datetime(Reviews['Review_date'])
    print("semoji,eng")
-   Reviews['em_t']=Reviews['Review_title'].apply(delete_emoji)
-   Reviews['em_b']=Reviews['Review_body'].apply(delete_emoji)
-
-
-   print("end emoji,eng")
    #Reviews['cl_t']=Reviews['em_t'].apply(delete_notEnglish)
    #Reviews['cl_b']=Reviews['em_b'].apply(delete_notEnglish)
-
    ## duplicates below delete later
+
+   #remove emoji
+   Reviews['em_t']=Reviews['Review_title'].apply(delete_emoji)
+   Reviews['em_b']=Reviews['Review_body'].apply(delete_emoji)
    Reviews['cl_t']=Reviews['em_t']
    Reviews['cl_b']=Reviews['em_b']
 
+   #preform punctuations delete
+   Reviews['cl_t']=Reviews['cl_t'].apply(delete_punctuation)
+   Reviews['cl_b']=Reviews['cl_b'].apply(delete_punctuation)
+   print("punctuation")
+   #to perform spelling check
+   #Reviews['cl_t']=Reviews['cl_t'].apply(spelling_correction)
+   #Reviews['cl_b']=Reviews['cl_b'].apply(spelling_correction)
 
 
-   print("seng")
+   print("spelling_correction end")
+
    Reviews['cl_t'].replace('', np.nan, inplace=True)
    Reviews['cl_b'].replace('', np.nan, inplace=True)
    print("end emoji,eng")
@@ -77,11 +119,8 @@ def analyze_engine(Reviews):
    Reviews.dropna(subset=['cl_t'], inplace=True)
    Reviews.dropna(subset=['cl_b'], inplace=True)
 
-   Reviews['cl_t']=Reviews['cl_t'].apply(delete_punctuation)
-   Reviews['cl_b']=Reviews['cl_b'].apply(delete_punctuation)
-   print("punctuation")
-   Reviews['cl_t']=Reviews['cl_t'].apply(delete_stopwords)
-   Reviews['cl_b']=Reviews['cl_b'].apply(delete_stopwords)
+
+
    print("stopwords")
    Reviews['cl_t']=Reviews['cl_t'].apply(stemming)
    Reviews['cl_b']=Reviews['cl_b'].apply(stemming)
@@ -94,29 +133,32 @@ def analyze_engine(Reviews):
 
    all_words=list(Reviews['cl_t'])
    all_words=list(Reviews['cl_b'])
-
    counts_words = collections.Counter(all_words)
-
+   #temp_data(Reviews)
+   st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
    st.subheader("Most Common Words")
    with st.beta_expander('Click to maximize-->'):
-       st.beta_container():
-       
-       num=st.slider("No. of Frequent Words",min_value=5, max_value=20, value=5)
-
-       words_df = pd.DataFrame(counts_words.most_common(num),
-                             columns=['words', 'count'])
-       st.dataframe(words_df)
-
-   #st.subheader("Most Common Words by Year/Month")
-   #with st.beta_expander('Click to maximize-->'):
-       #options={'Year', 'Month'}
-       #opt=streamlit.radio(label, options)
-
-
-
-   #w=[]
-   #def print_col(w,i):
-
+           Val=["5","10","15"]
+           num=st.radio("No. of Frequent Words",Val)
+           if num=="5":
+               words_df = pd.DataFrame(counts_words.most_common(5),columns=['words', 'count'])
+               st.table(words_df)
+           elif num=="10":
+               words_df = pd.DataFrame(counts_words.most_common(10),columns=['words', 'count'])
+               st.table(words_df)
+           else:
+               words_df = pd.DataFrame(counts_words.most_common(15),columns=['words', 'count'])
+               st.table(words_df)
+   rev_data=pd.DataFrame()
+   rev_data["Review_date"]=Reviews["Review_date"]
+   rev_data["text"] = Reviews[['cl_t','cl_b']].apply(lambda x: ' '.join(x), axis=1)
+   rev_data=sentiment_par(rev_data)
+   st.subheader("Vibe Meter")
+   st.info("We read the reviews for you and learnt what people vibed in it.")
+   vibe_plot(rev_data)
+   st.info("that's all for now")
+#Reviews=pd.read_csv(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\reviews.csv")
+#analyze_engine(Reviews)
 
 
 

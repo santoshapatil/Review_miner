@@ -11,6 +11,12 @@ from PIL import Image
 import matplotlib.pyplot as plt
 import matplotlib
 matplotlib.use("Agg")
+from bokeh.io import curdoc
+from bokeh.layouts import layout
+from bokeh.models import (Button, CategoricalColorMapper, ColumnDataSource,
+                          HoverTool, Label, SingleIntervalTicker, Slider,)
+from bokeh.palettes import Spectral6
+from bokeh.plotting import figure
 #from analytics.analytics_engine import analyze_engine
 #https://pandas.pydata.org/pandas-docs/stable/getting_started/intro_tutorials/09_timeseries.html?highlight=datetime
 def show(d):
@@ -48,27 +54,46 @@ def show(d):
         st.pyplot(plt)
 
 
-    graph = figure(x_axis_type = "datetime", title = "Rating Over Time")
-    graph.xaxis.axis_label = 'Date'
-    graph.yaxis.axis_label = 'Rating'
+    graph1 = figure(x_axis_type = "datetime", title = "Rating Over Time",plot_width=400, plot_height=400)
+    graph1.xaxis.axis_label = 'Date'
+    graph1.yaxis.axis_label = 'Rating'
     color = "lightblue"
     legend_label = 'Rating-line'
-    graph.line(d['Review_date'],
-        d["Review_rating"],
-        color = color,
-        legend_label = legend_label)
+    line_color = "red"
+    # type of line
+    line_dash = "dashdot"
+    # offset of line dash
+    line_dash_offset = 1
+    graph1.circle(d['Review_date'],d["Review_rating"],
+           legend_label = legend_label)
 
-    st.bokeh_chart(graph)
+    st.bokeh_chart(graph1)
+    #color_mapper = CategoricalColorMapper(palette=Spectral6, factors=regions_list)
 
 
 
+    st.subheader("Rating over Time")
+    st.info("Use the below graphs to know weather the rating of the product has been consistent with time. The average of the ratings is calculated based on month or year for the product selected.")
 
+    date_data=d[["Review_date","Review_rating"]]
+    grp_month=date_data.groupby(pd.Grouper(key='Review_date',freq='M')).mean()
+    grp_year=d.groupby(d['Review_date'].dt.year)["Review_rating"].mean()
+    #date_data=date_data.groupby(pd.Grouper(key='Review_date',freq='M')).mean()
+    with st.beta_expander('Click to minimize-->',expanded=True):
+        with st.beta_container():
+            gtype=["Month","Year"]
+            group_typ = st.selectbox("Group Date by",gtype,key="gtype")
+
+            if group_typ=="Month":
+                st.line_chart(grp_month)
+            else:
+                st.line_chart(grp_year)
 
     #d.plt(Review_date,Review_rating)
     #plt.show()
     #st.pyplot(plt)
-    return
 
 
-#f=pd.read_csv(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\reviews.csv")
-#show(df)
+
+#Reviews=pd.read_csv(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\reviews.csv")
+#show(Reviews)
