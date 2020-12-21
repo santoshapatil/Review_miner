@@ -24,17 +24,27 @@ import time
 
 #"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner"
 def getReview_link(s, u):
-    if s != "stop":
-        cookie = {}
-        header = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'}
-        uu = requests.get(u, cookies=cookie, headers=header)
-        soup = BeautifulSoup(uu.content, 'html.parser')
-        rev = soup.find('div', id="reviews-medley-footer")
-        t = rev.find('a').get('href')
-        r_u = "https://www.amazon.in" + t + "&sortBy=recent"
-        return r_u
+            if s != "stop":
+                cookie = {}
+                header = {
+                    'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'}
+                uu = requests.get(u, cookies=cookie, headers=header)
+                soup = BeautifulSoup(uu.content, 'html.parser')
+                rev=soup.find('div',id="reviews-medley-footer")
+                t=rev.find('a').get('href')
+                r_u="https://www.amazon.in"+t+"&sortBy=recent"
 
+                p_name=soup.find('h1',id="title").get_text()
+                print(p_name)
+
+                #p_name="Couldn't get Product Name"
+
+                return r_u,p_name
+
+
+            #r_u="Not Available"
+            #p_name="Not Available"
+            #return r_u,p_name
 
 def getReviews(url, pg):
     cookie = {}
@@ -130,40 +140,47 @@ def Review_extract(purl):
                     B = []
                     D = []
                     S = []
-                    rev_link = getReview_link(st, p)
+                    rev_link,prd_name = getReview_link(st, p)
+                    error="go"
+                    if rev_link=="Not Available":
+                        error="error"
 
-                    pg = 1
-                    ntpg = 1
-                    while (pg >= ntpg):
+                    else:
+                        pg = 1
+                        ntpg = 1
+                        while (pg >= ntpg):
 
-                        #my_bar = st.progress(0)
-                        #for percent_complete in range(pg):
-                            #time.sleep(0.1)
-                            #my_bar.progress(percent_complete + 1)
-                        print(pg)
-                        r_t = []
-                        r_h = []
-                        r_b = []
-                        r_s = []
-                        r_h, r_b, r_t,r_s, ntpg = getReviews(rev_link, pg)
+                            #my_bar = st.progress(0)
+                            #for percent_complete in range(pg):
+                                #time.sleep(0.1)
+                                #my_bar.progress(percent_complete + 1)
+                            print(pg)
+                            r_t = []
+                            r_h = []
+                            r_b = []
+                            r_s = []
+                            r_h, r_b, r_t,r_s, ntpg = getReviews(rev_link, pg)
 
-                        H.extend(r_h)
-                        B.extend(r_b)
-                        D.extend(r_t)
-                        S.extend(r_s)
-                        if ntpg > pg:
-                            pg = ntpg
-                            continue
-                        else:
-                            break
+                            H.extend(r_h)
+                            B.extend(r_b)
+                            D.extend(r_t)
+                            S.extend(r_s)
+                            if ntpg > pg:
+                                pg = ntpg
+                                continue
+                            else:
+                                break
 
                     Reviews = pd.DataFrame(({"Review_title": H,
-                                             "Review_body": B,
-                                             "Review_rating":S,
-                                             "Review_date": D}))
+                                                 "Review_body": B,
+                                                 "Review_rating":S,
+                                                 "Review_date": D}))
 
-                    #Reviews.to_csv("reviews.csv")
-                    return Reviews
+                        #Reviews.to_csv("reviews.csv")
+                    return Reviews,prd_name,error
+
+
+
 
 #def main(url):
 #Review_extract(url)

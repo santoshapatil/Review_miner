@@ -68,15 +68,25 @@ def main():
         if st.button("Analyze Reviews",key="go"):
             if "amazon.in" in product_url:
                 with st.spinner('Crawling Amazon to get reviews'):
-                    data=amz(product_url)
-                    st.success('Extrction Complete!')
-                    action_log(lid,choice,product_url)
-                    #(lid,product_url,l_date_time,data)
-                    DB(data)
+                    data,p_name,error=amz(product_url)
+                    if error=="stop":
+                        st.info("Unable to connect to Amazon is Not available right now")
+                        st.stop()
+                    else:
+                        st.success('Extrction Complete!')
+                        st.title("Lets dig in to the product:")
+                        st.info(p_name)
+                        action_log(lid,choice,product_url)
+                        #(lid,product_url,l_date_time,data)
+                        DB(data)
 
-                    analyze_engine(data)
-                    rev_warehouse(product_url,l_date_time,data)
-                    st.info("that's all for now")
+                        analyze_engine(data)
+                        rev_warehouse(product_url,l_date_time,data)
+                        st.info("that's all for now")
+
+
+
+
 
 
             else:

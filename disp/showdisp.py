@@ -23,7 +23,7 @@ def show(d):
     d['Review_date']= pd.to_datetime(d['Review_date'])
 
     cnt_rev=len(d)
-    st.write("Extracted a total of ",cnt_rev)
+    st.write("We Extracted a total of ",cnt_rev)
     startd=d['Review_date'].iloc[0]
     lastd=d['Review_date'].iloc[-1]
     sd=date(day=startd.day, month=startd.month, year=startd.year).strftime('%d %B %Y')
@@ -54,20 +54,7 @@ def show(d):
         st.pyplot(plt)
 
 
-    graph1 = figure(x_axis_type = "datetime", title = "Rating Over Time",plot_width=400, plot_height=400)
-    graph1.xaxis.axis_label = 'Date'
-    graph1.yaxis.axis_label = 'Rating'
-    color = "lightblue"
-    legend_label = 'Rating-line'
-    line_color = "red"
-    # type of line
-    line_dash = "dashdot"
-    # offset of line dash
-    line_dash_offset = 1
-    graph1.circle(d['Review_date'],d["Review_rating"],
-           legend_label = legend_label)
-
-    st.bokeh_chart(graph1)
+    
     #color_mapper = CategoricalColorMapper(palette=Spectral6, factors=regions_list)
 
 
