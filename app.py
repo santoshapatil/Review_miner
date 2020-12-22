@@ -57,7 +57,7 @@ def main():
 
     if page == "Home":
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
-        marketplace = ["amazon.in","flipkart.in","swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"]
+        marketplace = ["amazon.in","flipkart.com","swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"]
         c1,c2 = st.beta_columns((1,4))
         with c1:
             choice = st.selectbox("Select Marketplace",marketplace,key="marketplace")
@@ -71,7 +71,7 @@ def main():
                 with st.spinner('Crawling Amazon to get reviews'):
                     data,p_name,error=amz(product_url)
                     if error=="stop":
-                        st.info("Unable to connect to Amazon is Not available right now")
+                        st.info("Unable to connect!! Amazon is Not available right now")
                         st.stop()
                     else:
                         st.success('Extrction Complete!')
@@ -88,9 +88,10 @@ def main():
         if st.button("Analyze Reviews",key="go"):
             if "flipkart.com" in product_url:
                 with st.spinner('Crawling Flipkart to get reviews'):
+                    print("entered0")
                     data,p_name,error=flipkart(product_url)
                     if error=="stop":
-                        st.info("Unable to connect to Amazon is Not available right now")
+                        st.info("Unable to connect!! Flipkart is Not available right now")
                         st.stop()
                     else:
                         st.success('Extrction Complete!')

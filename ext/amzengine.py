@@ -133,7 +133,7 @@ def Review_extract(purl):
                     Reviews = pd.DataFrame()
                     page = requests.get(p, cookies=cookie, headers=header)
                     if page.status_code == 200:
-                        st = page
+                        st = "page"
                     else:
                         st = "stop"
                     H = []

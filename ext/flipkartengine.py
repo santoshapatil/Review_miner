@@ -5,7 +5,7 @@ from bs4 import BeautifulSoup
 import requests
 import os
 import pandas as pd
-from datetime import datetime
+from datetime import datetime,timedelta
 from dateutil.parser import parse
 
 def getReview_link(s, u):
@@ -16,18 +16,18 @@ def getReview_link(s, u):
                 uu = requests.get(u, cookies=cookie, headers=header)
                 soup = BeautifulSoup(uu.content, 'html.parser')
                 error="go"
-                try:
-                  rev=soup.find('div',class_="_2c2kV-")
-                  rev=rev.find_next_sibling("a").get("href")
-                  rev_link="https://www.flipkart.com"+rev+"&aid=overall&certifiedBuyer=false&sortOrder=MOST_RECENT"
-                  nm=soup.find('h1',class_="yhB1nd")
-                  p_name=nm.find("span").get_text()
-                  return rev_link,p_name,error
-                except:
-                  rev_link="not_available"
-                  p_name="not_available"
-                  error="error"
-                  return rev_link,p_name,error
+                rev=soup.find('div',class_="_2c2kV-")
+                rev=rev.find_next_sibling("a").get("href")
+                rev_link="https://www.flipkart.com"+rev+"&aid=overall&certifiedBuyer=false&sortOrder=MOST_RECENT"
+                nm=soup.find('h1',class_="yhB1nd")
+                p_name=nm.find("span").get_text()
+                return rev_link,p_name,error
+
+                #except:
+                  #rev_link="not_available"
+                  #p_name="not_available"
+                  #error="error"
+                  #return rev_link,p_name,error
 
 def getReviews(url, pg):
     cookie = {}
@@ -35,77 +35,83 @@ def getReviews(url, pg):
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'}
 
     ur = url + "&page=" + str(pg)
-    page = requests.get(ur, cookies=cookie, headers=header)
-    r_h = []
-    r_b = []
-    r_t = []
-    r_s = []
-    if page.status_code == 200:
-        soup = BeautifulSoup(page.content, 'html.parser')
-        r="g"
-        if r == "f":
-            return r_h, r_b, r_t,r_s, pg
-        else:
+    try:
+        page = requests.get(ur, cookies=cookie, headers=header)
+        r_h = []
+        r_b = []
+        r_t = []
+        r_s = []
+        if page.status_code == 200:
+            soup = BeautifulSoup(page.content, 'html.parser')
+            r="g"
+            if r == "f":
+                return r_h, r_b, r_t,r_s, pg
+            else:
 
-            rt = soup.find_all("p", class_= "_2-N8zT")
+                rt = soup.find_all("p", class_= "_2-N8zT")
 
-            for i in rt:
-                if i is None:
-                    r_h.append(None)
-                else:
-                    v = i.get_text()
-                    r_h.append(v)
-            rb = soup.find_all("div",class_="t-ZTKy")
-
-            for i in rb:
-                if i is None:
-                    r_b.append(None)
-                else:
-                    v = i.get_text()
-                    v = v.strip("READ MORE")
-                    r_b.append(v)
-            dt = soup.find_all("p", class_= "_2sc7ZR")
-            for i in range(len(dt)):
-                if dt[i] is None:
-                    r_t.append(None)
-                else:
-                    if i%2==0:
-                      continue
-                    else:
-                      v=dt[i].get_text()
-                      r_t.append(v)
-
-            rs = soup.find_all("div", class_= "_3LWZlK")
-            for i in rs:
-                if i is None:
-                    r_s.append(None)
-                else:
+                for i in rt:
                     if i is None:
-                      r_s.append(None)
+                        r_h.append(None)
                     else:
-                      v=i.get_text()
-                      r_s.append(v)
-            del r_s[0]
+                        v = i.get_text()
+                        r_h.append(v)
+                rb = soup.find_all("div",class_="t-ZTKy")
 
-            nextp=[]
-            netp = soup.find_all("a", class_="_1LKTO3")
-            for i in netp:
-                g=i.find("span")
-                if g is None:
-                    nextp.append(None)
-                else:
-                    nextp.append(g.get_text())
+                for i in rb:
+                    if i is None:
+                        r_b.append(None)
+                    else:
+                        v = i.get_text()
+                        v = v.strip("READ MORE")
+                        r_b.append(v)
+                dt = soup.find_all("p", class_= "_2sc7ZR")
+                for i in range(len(dt)):
+                    if dt[i] is None:
+                        r_t.append(None)
+                    else:
+                        if i%2==0:
+                          continue
+                        else:
+                          v=dt[i].get_text()
+                          r_t.append(v)
 
-            npg = 0
-            if pg==1 and nextp[0]=="Next":
-              npg = pg + 1
-              return r_h, r_b, r_t,r_s, npg
-            elif pg!=1 and nextp[0]=="Previous":
-              if len(nextp)==2:
-                npg = pg + 1
-                return r_h, r_b, r_t,r_s, npg
-              else:
-                return r_h, r_b, r_t,r_s, npg
+                rs = soup.find_all("div", class_= "_3LWZlK")
+                for i in rs:
+                    if i is None:
+                        r_s.append(None)
+                    else:
+                        if i is None:
+                          r_s.append(None)
+                        else:
+                          v=i.get_text()
+                          r_s.append(v)
+                del r_s[0]
+
+                nextp=[]
+                netp = soup.find_all("a", class_="_1LKTO3")
+                for i in netp:
+                    g=i.find("span")
+                    if g is None:
+                        nextp.append(None)
+                    else:
+                        nextp.append(g.get_text())
+
+                npg = 0
+                if pg==1 and nextp[0]=="Next":
+                  npg = pg + 1
+                  return r_h, r_b, r_t,r_s, npg
+                elif pg!=1 and nextp[0]=="Previous":
+                  if len(nextp)==2:
+                    npg = pg + 1
+                    return r_h, r_b, r_t,r_s, npg
+                  else:
+                    return r_h, r_b, r_t,r_s, npg
+    except ConnectionError:
+        npg=0
+        return r_h, r_b, r_t,r_s, npg
+
+
 
 def ago_do_date(ago):
     if "day" in ago:
@@ -142,13 +148,14 @@ def Review_extract(purl):
                         #print(product_u)
                         #message = request.form.get('message')
                         #p = str(product_u)
-
+                    print("enterd")
                     cookie = {}
                     header = {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/77.0.3865.90 Safari/537.36'}
 
                     Reviews = pd.DataFrame()
                     page = requests.get(p, cookies=cookie, headers=header)
+
                     if page.status_code == 200:
                         st = "GO"
                     else:
@@ -183,11 +190,11 @@ def Review_extract(purl):
                                 continue
                             else:
                                 break
-                    Reviews["Review_date"]=Reviews.Review_date.apply(ago_do_date)
+
                     Reviews = pd.DataFrame(({"Review_title": H,
                                                  "Review_body": B,
                                                  "Review_rating":S,
                                                  "Review_date": D}))
-
-                    #Reviews.to_csv("reviews.csv")
+                    Reviews["Review_date"]=Reviews["Review_date"].apply(ago_do_date)
+                    Reviews.to_csv("reviews_fkart.csv")
                     return Reviews,prd_name,error
