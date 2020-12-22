@@ -1,0 +1,14 @@
+graph1 = figure(x_axis_type = "datetime", title = "Rating Over Time",plot_width=400, plot_height=400)
+    graph1.xaxis.axis_label = 'Date'
+    graph1.yaxis.axis_label = 'Rating'
+    color = "lightblue"
+    legend_label = 'Rating-line'
+    line_color = "red"
+    # type of line
+    line_dash = "dashdot"
+    # offset of line dash
+    line_dash_offset = 1
+    graph1.circle(d['Review_date'],d["Review_rating"],
+           legend_label = legend_label)
+
+    st.bokeh_chart(graph1)

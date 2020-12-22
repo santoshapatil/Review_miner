@@ -12,6 +12,7 @@ import os, base64
 
 
 from ext.amzengine import Review_extract as amz
+from ext.flipkartengine import Review_extract as flipkart
 from disp.showdisp import show as DB
 from analytics.analytics_engine import analyze_engine
 from sessions.session import session_id
@@ -79,10 +80,30 @@ def main():
                         action_log(lid,choice,product_url)
                         #(lid,product_url,l_date_time,data)
                         DB(data)
-
                         analyze_engine(data)
                         rev_warehouse(product_url,l_date_time,data)
                         st.info("that's all for now")
+    elif choice == "flipkart.com":
+        st.subheader("flipkart.com")
+        if st.button("Analyze Reviews",key="go"):
+            if "flipkart.com" in product_url:
+                with st.spinner('Crawling Flipkart to get reviews'):
+                    data,p_name,error=flipkart(product_url)
+                    if error=="stop":
+                        st.info("Unable to connect to Amazon is Not available right now")
+                        st.stop()
+                    else:
+                        st.success('Extrction Complete!')
+                        st.title("Lets dig in to the product:")
+                        st.info(p_name)
+                        action_log(lid,choice,product_url)
+                        #(lid,product_url,l_date_time,data)
+                        DB(data)
+                        analyze_engine(data)
+                        rev_warehouse(product_url,l_date_time,data)
+                        st.info("that's all for now")
+
+
 
 
 
