@@ -195,6 +195,7 @@ def Review_extract(purl):
                                                  "Review_body": B,
                                                  "Review_rating":S,
                                                  "Review_date": D}))
+                    Reviews["Review_rating"]= pd.to_numeric(Reviews["Review_rating"])
                     Reviews["Review_date"]=Reviews["Review_date"].apply(ago_do_date)
                     Reviews.to_csv("reviews_fkart.csv")
                     return Reviews,prd_name,error

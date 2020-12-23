@@ -21,12 +21,18 @@ from sessions.Review_db import rev_warehouse
 #from pages.home import home_page
 
 def main():
+    st.set_page_config(
+    page_title="intmood",
+    page_icon="🧊",
+    layout="wide",
+    initial_sidebar_state="expanded")
+
     go=1
     lid,l_date_time=session_id(go)
     st.title("intmood")
     #st.text("By Santosh A Patil")
     pages = ["Home","How to"]
-    page = st.sidebar.selectbox("Select Page",pages,key="page")
+    page = st.sidebar.radio("Select Page",pages,key="page")
 
     st.sidebar.title("Key Idea")
     st.sidebar.info(
@@ -83,6 +89,8 @@ def main():
                         analyze_engine(data)
                         rev_warehouse(product_url,l_date_time,data)
                         st.info("that's all for now")
+            else:
+                st.text("Enter a amazon.in starting product URL")
     elif choice == "flipkart.com":
         st.subheader("flipkart.com")
         if st.button("Analyze Reviews",key="go"):
@@ -103,19 +111,21 @@ def main():
                         analyze_engine(data)
                         rev_warehouse(product_url,l_date_time,data)
                         st.info("that's all for now")
-
-
-
-
-
-
-
-
             else:
-                st.text("Enter a amazon.in starting product URL")
+                st.text("Enter a flipkart.com starting product URL")
+
+
+
+
+
+
+
+
         else:
             st.write("Press the above button..")
 
 
 if __name__ == '__main__':
-	main()
+        main()
+        #Reviews=pd.read_csv(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\reviews_fkart.csv")
+        #main(Reviews)

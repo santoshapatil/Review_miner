@@ -81,8 +81,6 @@ def vibe_plot(rev_data):
 
 
 
-
-
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
     by_Val=["By Year","By Quarter"]
     mode=st.radio("Select :",by_Val)
@@ -94,7 +92,7 @@ def vibe_plot(rev_data):
                 vibe_m=vide_meter(row["Polarity"])
                 st.plotly_chart(vibe_m)
 
-    else:
+    elif mode == "By Quarter":
         qa_sel=quind["DATE"]
         qs=st.radio("Select Year",qa_sel)
         for index,row in quind.iterrows():
