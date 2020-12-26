@@ -1,0 +1,8 @@
+side_logo = Image.open('intmood_1.png')
+side_logo=Image.open('int_mood_streamlit_side_logo.png')
+    #header_html = "<img src='data:image/png;base64,{}' class='img-fluid'>".format(img_to_bytes("intmood_1.png"))
+    #st.subheader("")
+    with st.sidebar.beta_container():
+        image=st.beta_columns(1)
+        with side_logo:
+            st.image(side_logo, use_column_width=True)
