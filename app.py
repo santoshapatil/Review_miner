@@ -36,7 +36,7 @@ import streamlit.components.v1 as components
 #feedback form url
 #fedback form iframe <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?embedded=true" width="640" height="1051" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 # width 640px,height 1051px
-
+#  https://forms.gle/FhasqkRhHiAG5Put5
 def start_time():
     start=time.time()
     return start 
@@ -228,13 +228,15 @@ def main():
                 with c4:
                     youtube=f"[![youtube](https://cdn.exclaimer.com/Handbook%20Images/youtube-icon_32x32.png)](https://www.youtube.com/channel/UCZ84Qr78IKdMKtYLymu1TFw)"
                     st.markdown(youtube,unsafe_allow_html=False)
-    st.sidebar.subheader("Feedback/Report broken link")       
+    st.sidebar.subheader("Feedback/Report broken link")
+    with st.sidebar.beta_container():
+        f1,f2= st.beta_columns(2)
+        with f1:
+            feedback=f"[![feedback](https://www.freeiconspng.com/uploads/feedback-icon-18.png)](https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?usp=sf_link)"
+            st.markdown(feedback,unsafe_allow_html=False)       
     u_email=st.sidebar.text_input("Email ID",value="")
     u_feedback=st.sidebar.text_input("Enter Feedback here",value="")    
-    st.sidebar.components.v1.iframe.html(
-        """<iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?embedded=true" width="640" height="1051" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
-        """
-    )
+    
     
 
 
