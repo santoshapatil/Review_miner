@@ -9,31 +9,18 @@ import calendar
 import datetime
 #del after checking
 from textblob import TextBlob
-import pandas as pd
 
+from plots.mood_plot import mood_meter
 def get_sentiment(text):
   blob = TextBlob(text)
   result = blob.sentiment.polarity
   return result
 
+@st.cache
+def load_df(yind,mind,quind):
+  return yind,mind,quind
 
-def vide_meter(polarity):
-    fig = go.Figure(go.Indicator(
-    domain = {'x': [0, 1], 'y': [0, 1]},
-    value = polarity,
-    mode = "gauge+number",
-    #title={'text': "<h1>Vibe Meter</h1><p>Red -&gt; Poor Vibe</p><p>White -&gt; Neutral Vibe</p><p>Green -&gt; Good Vibe</p>"},
-    title = {'text':"<b>Vibe Score</b><br><span style='color: orange; font-size:5'>RED is not okay, WHITE is Neutral,GREY is Good </span>",'font': {"size": 14}
-             },
-    gauge = {'axis': {'range': [-1, 1]},
-             'steps' : [
-                  {'range': [-1,-0.2], 'color': "red",'name':"Not Okay"},
-                  {'range': [-0.2,0.2], 'color': "white",'name':"Not Okay"},
-                  {'range': [0.2, 1], 'color': "lightgray",'name':"Not Okay"}]
-             }))
-    fig.update_layout(paper_bgcolor = "beige", font = {'color': "darkblue", 'family': "Arial"})
 
-    return fig
 def moji(pol):
   if pol > 0.5 :
     custom_emoji = ':smile:'
@@ -75,43 +62,50 @@ def vibe_plot(rev_data):
     quind['DATE'] =quind['year'].astype(str) + ' Q' + quind['quarter'].astype(str)
     mind["DATE"]=pd.to_datetime(mind[['year', 'month']].assign(DAY=1))
     av_pol=mind["Polarity"].mean()
+    
 
 
 
 
-
-
+    # yind,mind,quind=load_df(yind,mind,quind)
     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
     by_Val=["By Year","By Quarter"]
     mode=st.radio("Select :",by_Val)
-    if mode =="By Year":
+    st.subheader("")
+    with st.beta_container():
+      
+      if mode =="By Year":
         year_sel=yind["year"]
         year=st.radio("Select Year",year_sel)
         for index,row in yind.iterrows():
             if row["year"]==year:
-                vibe_m=vide_meter(row["Polarity"])
-                st.plotly_chart(vibe_m)
+                vibe_m=mood_meter(row["Polarity"])
+                st.plotly_chart(vibe_m,use_container_width=True)
 
-    elif mode == "By Quarter":
+      elif mode == "By Quarter":
         qa_sel=quind["DATE"]
-        qs=st.radio("Select Year",qa_sel)
+        qs=st.radio("Select Quarter",qa_sel)
         for index,row in quind.iterrows():
             if row["DATE"]==qs:
-                vibe_m=vide_meter(row["Polarity"])
-                st.plotly_chart(vibe_m)
-
-    st.subheader("Vibe Score in the Past:")
-    st.info("After reading the reviews,we gave a score for each one of them and here is what people have vibed across.")
+                vibe_m=mood_meter(row["Polarity"])
+                st.plotly_chart(vibe_m,use_container_width=True)
+    
+      
+      
     fig = go.Figure(px.scatter(quind, x="DATE", y="Polarity",
                  size='No. of Reviews', hover_data=['No. of Reviews',"Polarity"]
             ))
-    fig.add_shape(
-            type='line',
-            x0=0,
-            y0=av_pol,
-            x1=quind["DATE"].iloc[-1],
-            y1=av_pol,
-            )
+    # fig.add_shape(
+    #         type='line',
+    #         x0=0,
+    #         y0=av_pol,
+    #         x1=quind["DATE"].iloc[-1],
+    #         y1=av_pol,
+    #         )
+    fig.add_shape( # add a horizontal "target" line
+                 type="line", line_color="salmon", line_width=3, opacity=1, line_dash="dot",
+                  x0=0, x1=1, xref="paper", y0=av_pol, y1=av_pol, yref="y"
+                   )
     fig.add_annotation(
             x=quind["DATE"].iloc[-1],
             y=av_pol,
@@ -143,12 +137,24 @@ def vibe_plot(rev_data):
 
     fig.update_layout(plot_bgcolor="#F2F2F0",paper_bgcolor = "#F2F2F0", font = {'color': "#F1828D", 'family': "Arial"})
     #fig.update_layout(plot_bgcolor=<VALUE>)
-    fig.show()
-    st.plotly_chart(fig)
+    st.subheader("Vibe Score in the Past:")
+    st.info("After reading the reviews,we gave a score for each one of them and here is what people have vibed across.")
+
+
+    with st.beta_container():
+      st.plotly_chart(fig,use_container_width=True)
+
+      
+    
+    
     if quind["Polarity"].iloc[-1]<av_pol and quind["Polarity"].iloc[-2]<av_pol:
-        st.info("Watch out!! look for an alternative as the people who bought the product in the last quarter felt the product in not upto the mark")
+        st.info("Watch out!! look for an alternative as the people who bought the product in the last quarter felt the product is not upto the mark")
     else:
         st.info("In the last two quarters we see that the Vibe score is greater than what most people felt, so the seller has not compramised on his product expectations.")
+    
+
+    
+
 
 #Reviews=pd.read_csv(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\reviews.csv")
 #print("read")

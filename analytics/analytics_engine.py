@@ -11,6 +11,7 @@ from sklearn.cluster import KMeans
 from sklearn.feature_extraction.text import TfidfTransformer
 from sklearn.feature_extraction.text import CountVectorizer
 from nltk.stem import SnowballStemmer
+from nltk.stem.porter import PorterStemmer
 from sklearn.naive_bayes import MultinomialNB
 from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 from PIL import Image
@@ -36,10 +37,20 @@ check = Speller(lang='en')
 #from temp.temp_data import temp_data
 from analytics.vibe_meter import vibe_plot
 from analytics.sentiment_score import sentiment_par
+from analytics.word_sentiment import word_senti
+import plotly.graph_objects as go
+
+
+#del this
+#from vibe_meter import vibe_plot
+#from sentiment_score import sentiment_par
+#from word_sentiment import word_senti
+#
+
 
 #del after checking
 from textblob import TextBlob
-import pandas as pd
+
 
 def get_sentiment(text):
   blob = TextBlob(text)
@@ -50,7 +61,7 @@ def get_sentiment(text):
 def delete_emoji(text):
   allchars = text
   emoji_list = [c for c in allchars if c in emoji.UNICODE_EMOJI]
-  clean_text = ' '.join([st for st in text.split() if not any(i in st for i in emoji_list)])
+  clean_text = ' '.join([str for str in text.split() if not any(i in str for i in emoji_list)])
   return clean_text
 
 #def delete_notEnglish(text):
@@ -84,79 +95,89 @@ def stemming(text):
   text = text.split()
   words = ""
   for i in text:
-    stemmer = SnowballStemmer("english")
+    stemmer = PorterStemmer()
     words =words + (stemmer.stem(i))+" "
-  return words
+    return words
+
+def spli_words(text):
+  return text.split()
+
+def word_list(counts_words):
+  return counts_words
+
 def analyze_engine(Reviews):
+  
    Reviews.dropna(subset=['Review_rating'], inplace=True)
+   # review later *Review rating is removed*
+
+
+   Reviews["text"] = Reviews[['Review_title','Review_body']].apply(lambda x: ' '.join(x), axis=1)
    Reviews['Review_date']= pd.to_datetime(Reviews['Review_date'])
    print("semoji,eng")
-   #Reviews['cl_t']=Reviews['em_t'].apply(delete_notEnglish)
-   #Reviews['cl_b']=Reviews['em_b'].apply(delete_notEnglish)
-   ## duplicates below delete later
+   Reviews["text"]=Reviews['text'].apply(delete_emoji)
+   Reviews['text']=Reviews['text'].apply(delete_punctuation)
+   Reviews['text'].replace('', np.nan, inplace=True)
+   Reviews.dropna(subset=['text'], inplace=True)
+   Reviews['text']=Reviews['text'].apply(stemming)
+   Reviews['text'].replace('', np.nan, inplace=True)
+   Reviews.dropna(subset=['text'], inplace=True)
 
-   #remove emoji
-   Reviews['em_t']=Reviews['Review_title'].apply(delete_emoji)
-   Reviews['em_b']=Reviews['Review_body'].apply(delete_emoji)
-   Reviews['cl_t']=Reviews['em_t']
-   Reviews['cl_b']=Reviews['em_b']
+  #  #Reviews['cl_t']=Reviews['em_t'].apply(delete_notEnglish)
+  #  #Reviews['cl_b']=Reviews['em_b'].apply(delete_notEnglish)
+  #  ## duplicates below delete later
 
-   #preform punctuations delete
-   Reviews['cl_t']=Reviews['cl_t'].apply(delete_punctuation)
-   Reviews['cl_b']=Reviews['cl_b'].apply(delete_punctuation)
-   print("punctuation")
-   #to perform spelling check
-   #Reviews['cl_t']=Reviews['cl_t'].apply(spelling_correction)
-   #Reviews['cl_b']=Reviews['cl_b'].apply(spelling_correction)
+  #  #remove emoji
+  #  Reviews['em_t']=Reviews['Review_title'].apply(delete_emoji)
+  #  Reviews['em_b']=Reviews['Review_body'].apply(delete_emoji)
+  #  Reviews['cl_t']=Reviews['em_t']
+  #  Reviews['cl_b']=Reviews['em_b']
+
+  #  #preform punctuations delete
+  #  Reviews['cl_t']=Reviews['cl_t'].apply(delete_punctuation)
+  #  Reviews['cl_b']=Reviews['cl_b'].apply(delete_punctuation)
+  #  print("punctuation")
+  #  #to perform spelling check
+  #  #Reviews['cl_t']=Reviews['cl_t'].apply(spelling_correction)
+  #  #Reviews['cl_b']=Reviews['cl_b'].apply(spelling_correction)
+
+  #  Reviews['cl_t'].replace('', np.nan, inplace=True)
+  #  Reviews['cl_b'].replace('', np.nan, inplace=True)
+  #  print("end emoji,eng")
+
+  #  Reviews.dropna(subset=['cl_t'], inplace=True)
+  #  Reviews.dropna(subset=['cl_b'], inplace=True)
 
 
-   print("spelling_correction end")
 
-   Reviews['cl_t'].replace('', np.nan, inplace=True)
-   Reviews['cl_b'].replace('', np.nan, inplace=True)
-   print("end emoji,eng")
+  #  print("stopwords")
+  #  Reviews['cl_t']=Reviews['cl_t'].apply(stemming)
+  #  Reviews['cl_b']=Reviews['cl_b'].apply(stemming)
+  #  print("stem")
+  #  Reviews['cl_t'].replace('', np.nan, inplace=True)
+  #  Reviews['cl_b'].replace('', np.nan, inplace=True)
 
-   Reviews.dropna(subset=['cl_t'], inplace=True)
-   Reviews.dropna(subset=['cl_b'], inplace=True)
+  #  Reviews.dropna(subset=['cl_t'], inplace=True)
+  #  Reviews.dropna(subset=['cl_b'], inplace=True)
 
-
-
-   print("stopwords")
-   Reviews['cl_t']=Reviews['cl_t'].apply(stemming)
-   Reviews['cl_b']=Reviews['cl_b'].apply(stemming)
-   print("stem")
-   Reviews['cl_t'].replace('', np.nan, inplace=True)
-   Reviews['cl_b'].replace('', np.nan, inplace=True)
-
-   Reviews.dropna(subset=['cl_t'], inplace=True)
-   Reviews.dropna(subset=['cl_b'], inplace=True)
-
-   all_words=list(Reviews['cl_t'])
-   all_words=list(Reviews['cl_b'])
-   counts_words = collections.Counter(all_words)
-   #temp_data(Reviews)
-   st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
-   st.subheader("Most Common Words")
-   with st.beta_expander('Click to maximize-->'):
-           Val=["5","10","15"]
-           num=st.radio("No. of Frequent Words",Val)
-           if num=="5":
-               words_df = pd.DataFrame(counts_words.most_common(5),columns=['words', 'count'])
-               st.table(words_df)
-           elif num=="10":
-               words_df = pd.DataFrame(counts_words.most_common(10),columns=['words', 'count'])
-               st.table(words_df)
-           else:
-               words_df = pd.DataFrame(counts_words.most_common(15),columns=['words', 'count'])
-               st.table(words_df)
+   #all_words=list(Reviews['cl_t'])
+   #all_words=list(Reviews['cl_b'])
+   
+   Reviews["words"]=Reviews["text"].apply(spli_words)
    rev_data=pd.DataFrame()
+   rev_data["words"]=Reviews["words"]
    rev_data["Review_date"]=Reviews["Review_date"]
-   rev_data["text"] = Reviews[['cl_t','cl_b']].apply(lambda x: ' '.join(x), axis=1)
+   rev_data["text"] = Reviews[['Review_title','Review_body']].apply(lambda x: ' '.join(x), axis=1)
    rev_data=sentiment_par(rev_data)
-   st.subheader("Vibe Meter")
-   st.info("We read the reviews for you and learnt what people vibed in it.")
-   vibe_plot(rev_data)
-   st.info("that's all for now")
+   return rev_data
+
+       
+
+
+     
+   #else :
+     #st.text("Enter a valid word.")
+
+   
 #Reviews=pd.read_csv(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\reviews.csv")
 #analyze_engine(Reviews)
 

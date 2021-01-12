@@ -21,7 +21,7 @@ from sklearn.naive_bayes import MultinomialNB
 #from sklearn.externals import joblib
 import string
 import time
-
+from dateutil.parser import parse
 #"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner"
 def getReview_link(s, u):
             if s != "stop":
@@ -35,7 +35,7 @@ def getReview_link(s, u):
                 r_u="https://www.amazon.in"+t+"&sortBy=recent"
 
                 p_name=soup.find('h1',id="title").get_text()
-                print(p_name)
+                # print(p_name)
 
                 #p_name="Couldn't get Product Name"
 
@@ -59,22 +59,22 @@ def getReviews(url, pg):
     r_s = []
     if page.status_code == 200:
         soup = BeautifulSoup(page.content, 'html.parser')
-        r = soup.find('div', id="cm_cr-review_list")
-
-        if r == "f":
+        r = soup.find('div', class_="a-section a-spacing-none reviews-content a-size-base")
+        if r == None:
             return r_h, r_b, r_t,r_s, pg
         else:
 
-            ty = soup.find('div', class_="a-section a-spacing-none review-views celwidget")
+            # ty = soup.find('div', id="cm_cr-review_list")
 
-            rt = ty.find_all("a", {'data-hook': "review-title"})
-            stars=ty.find_all("i",{'data-hook': "review-star-rating"})
+            rt = r.find_all('a',{'data-hook': "review-title"})
+            stars=r.find_all("span",class_="a-icon-alt")
 
             for i in rt:
                 if i is None:
                     r_h.append(None)
                 else:
                     v = i.get_text()
+                    print(v)
                     v = v.strip("\n")
                     r_h.append(v)
 
@@ -84,19 +84,27 @@ def getReviews(url, pg):
                 if star is None:
                     r_s.append(None)
                 else:
+                    
                     s=star.get_text()
-                    s=s.strip(" out of 5 stars")
-                    s=float(s)
+                    
+
+                    s=s[0:3]
+                    
+                    s=float(s)#error with copying review star as 5 because of stripping "out of 5 stars"
+                    # if s ==0.0:
+                    #     s=5.0
                     r_s.append(s)
 
 
             rb = soup.find_all("span", {'data-hook': "review-body"})
             for i in rb:
                 if i is None:
+                    print(i)
                     r_b.append(None)
                 else:
                     v = i.get_text()
-                    v = v.strip("\n")
+                    # v = v.strip("")
+                    # print(v)
                     r_b.append(v)
             rti = soup.find_all("span", {'data-hook': "review-date"})
             for i in rti:
@@ -160,17 +168,23 @@ def Review_extract(purl):
                             r_b = []
                             r_s = []
                             r_h, r_b, r_t,r_s, ntpg = getReviews(rev_link, pg)
-
+                    
                             H.extend(r_h)
                             B.extend(r_b)
                             D.extend(r_t)
                             S.extend(r_s)
                             if ntpg > pg:
-                                pg = ntpg
-                                continue
-                            else:
-                                break
+                                   pg = ntpg
+                                   continue
 
+                            else:
+                                   break
+
+                            
+                    print(len(H))
+                    print(len(B))
+                    print(len(D))
+                    print(len(S))
                     Reviews = pd.DataFrame(({"Review_title": H,
                                                  "Review_body": B,
                                                  "Review_rating":S,
