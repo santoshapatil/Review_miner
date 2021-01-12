@@ -82,7 +82,7 @@ def getReviews(url, pg):
                     r_h.append(None)
                 else:
                     v = i.get_text()
-                    print(v)
+                    # print(v)
                     v = v.strip("\n")
                     r_h.append(v)
 
@@ -107,7 +107,7 @@ def getReviews(url, pg):
             rb = soup.find_all("span", {'data-hook': "review-body"})
             for i in rb:
                 if i is None:
-                    print(i)
+                    # (i)print
                     r_b.append(None)
                 else:
                     v = i.get_text()
