@@ -230,9 +230,7 @@ def main():
                     st.markdown(youtube,unsafe_allow_html=False)
     st.sidebar.subheader("Feedback/Report broken link")
     with st.sidebar.beta_container():
-        f1,f2= st.beta_columns(2)
-        with f1:
-            feedback=f"[![feedback](https://www.freeiconspng.com/uploads/feedback-icon-18.png)](https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?usp=sf_link)"
+            feedback=f"[![feedback](https://raw.githubusercontent.com/loadcontent/imagebox/main/3933037771600677167-48.png)](https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?usp=sf_link)"
             st.markdown(feedback,unsafe_allow_html=False)       
     u_email=st.sidebar.text_input("Email ID",value="")
     u_feedback=st.sidebar.text_input("Enter Feedback here",value="")    
