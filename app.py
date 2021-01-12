@@ -32,7 +32,7 @@ from PIL import Image
 from streamlit.report_thread import get_report_ctx
 import time
 import streamlit.components.v1 as components
-
+from skimage import io
 #feedback form url
 #fedback form iframe <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?embedded=true" width="640" height="1051" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 # width 640px,height 1051px
@@ -80,14 +80,23 @@ def img_to_bytes(img_path):
 @st.cache(persist=True, allow_output_mutation=True)
 def data_bridge(mkt,product_url):
        t=start_time()
-       data,p_name,error=build_bridge(mkt,product_url)
+       data,p_name,pimg,error=build_bridge(mkt,product_url)
        diff=log_time(t)
-       return data,p_name,error,diff
+       return data,p_name,pimg,error,diff
 
 def dashboard(lid,mkt,product_url):
-     data,p_name,error,diff=data_bridge(mkt,product_url)
+     data,p_name,pimg,error,diff=data_bridge(mkt,product_url)
     #  data= pd.read_csv(r"rev_warehouse.csv",index_col=False)
     #  data=data[data["session_id"]==lid]
+     img = io.imread(pimg)
+     p_img = px.imshow(img)
+     p_img.update_xaxes(showticklabels=False) # hide all the xticks
+     p_img.update_yaxes(showticklabels=False)
+    #  p_img.update_layout(plot_bgcolor="#F2F2F0",paper_bgcolor = "#F2F2F0", font = {'color': "#F1828D", 'family': "Arial"})
+    #  https://www.amazon.in/Lenovo-81NG002BIN-15-6-inch-I5-10210U-Microsoft/dp/B083PFG5HH/ref=cm_cr_arp_d_product_top?ie=UTF8
+     st.subheader("Product Image")
+     with st.beta_container():
+          st.plotly_chart(p_img,use_container_width=True)
      cnt_rev, sd,ld, avg_rating, pie_fig,hist_fig,fig=DB(data)
      st.write("We Extracted a total of ",cnt_rev)
      st.write("Extracted Reviews from "+sd+" to "+ld)
@@ -261,7 +270,7 @@ def main():
         # if st.button("Analyze Reviews",key=2):
         if "amazon.in" in product_url:
                 with st.spinner('Crawling Amazon to get reviews'):
-                    data,p_name,error,ext_time=data_bridge(mkt,product_url)
+                    data,p_name,pimg,error,ext_time=data_bridge(mkt,product_url)
                     # data=reservoir(data)
                     if error=="stop":
                         st.info("Unable to connect!! Amazon is Not available right now")

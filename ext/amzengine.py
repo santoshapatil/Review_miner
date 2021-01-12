@@ -22,6 +22,7 @@ from sklearn.naive_bayes import MultinomialNB
 import string
 import time
 from dateutil.parser import parse
+import re
 #"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner"
 def getReview_link(s, u):
             if s != "stop":
@@ -36,10 +37,17 @@ def getReview_link(s, u):
 
                 p_name=soup.find('h1',id="title").get_text()
                 # print(p_name)
+                try: 
 
+                    pimg=soup.find('div',class_="imgTagWrapper")
+                    v=pimg.find("img")
+                    t=v.get("data-a-dynamic-image")
+                    pimg=str(re.findall(r'"(.*?)"', t)[0])
+                except:
+                    pimg=""
                 #p_name="Couldn't get Product Name"
 
-                return r_u,p_name
+                return r_u,p_name,pimg
 
 
             #r_u="Not Available"
@@ -148,7 +156,7 @@ def Review_extract(purl):
                     B = []
                     D = []
                     S = []
-                    rev_link,prd_name = getReview_link(st, p)
+                    rev_link,prd_name,pimg = getReview_link(st, p)
                     error="go"
                     if rev_link=="Not Available":
                         error="error"
@@ -191,7 +199,7 @@ def Review_extract(purl):
                                                  "Review_date": D}))
 
                         #Reviews.to_csv("reviews.csv")
-                    return Reviews,prd_name,error
+                    return Reviews,prd_name,pimg,error
 
 
 

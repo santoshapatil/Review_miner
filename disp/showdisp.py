@@ -44,35 +44,35 @@ def show(rev_data):
     # c1.plotly_chart(pie_fig,use_container_width=True)
     hist_fig = px.histogram(r_df, x="Rate", y="rate_count", color="Rate",nbins=len(r_df.Rate),
                   hover_data=['rate_count'], labels={'rate_count':'No. of Reviews'})
-    hist_fig.add_shape( # add a horizontal "target" line
-                 type="line", line_color="salmon", line_width=3, opacity=1, line_dash="dot",
-                  x0=0, x1=1, xref="paper", y0=avg_rating, y1=avg_rating, yref="y"
-                   )
+    # hist_fig.add_shape( # add a horizontal "target" line
+    #              type="line", line_color="salmon", line_width=3, opacity=1, line_dash="dot",
+    #               x0=0, x1=1, xref="paper", y0=avg_rating, y1=avg_rating, yref="y"
+    #                )
     hist_fig.update_yaxes(showticklabels=False)
-    hist_fig.add_annotation( x=4,
-            y=avg_rating,
-            xref="x",
-            yref="y",
-            text="Average Rating",
-            showarrow=True,
-            font=dict(
-                family="Courier New, monospace",
-                size=16,
-                color="#ffffff"
-                ),
-            align="center",
-            arrowhead=2,
-            arrowsize=1,
-            arrowwidth=2,
-            arrowcolor="white",
-            ax=20,
-            ay=-30,
-            bordercolor="#c7c7c7",
-            borderwidth=2,
-            borderpad=4,
-            bgcolor="#ff7f0e",
-            opacity=0.8
-            )
+    # hist_fig.add_annotation( x=4,
+    #         y=avg_rating,
+    #         xref="x",
+    #         yref="y",
+    #         text="Average Rating",
+    #         showarrow=True,
+    #         font=dict(
+    #             family="Courier New, monospace",
+    #             size=16,
+    #             color="#ffffff"
+    #             ),
+    #         align="center",
+    #         arrowhead=2,
+    #         arrowsize=1,
+    #         arrowwidth=2,
+    #         arrowcolor="white",
+    #         ax=20,
+    #         ay=-30,
+    #         bordercolor="#c7c7c7",
+    #         borderwidth=2,
+    #         borderpad=4,
+    #         bgcolor="#ff7f0e",
+    #         opacity=0.8
+    #         )
     # hist_fig.update_layout(paper_bgcolor = "#F2F2F0", font = {'color': "darkblue", 'family': "Arial"})
     hist_fig.update_xaxes(showgrid=False,showline=True, linewidth=2, linecolor='black')
     hist_fig.update_yaxes(showgrid=False,showline=True, linewidth=2, linecolor='black')
