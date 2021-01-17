@@ -18,6 +18,9 @@ import plotly.graph_objects as go
 import plotly.express as px
 import pandas as pd
 import collections
+
+
+from pages.how_to import About
 from ext.mkt_bridge import build_bridge
 from disp.showdisp import show as DB
 from analytics.analytics_engine import analyze_engine
@@ -92,7 +95,7 @@ def dashboard(lid,mkt,product_url):
      p_img = px.imshow(img)
      p_img.update_xaxes(showticklabels=False) # hide all the xticks
      p_img.update_yaxes(showticklabels=False)
-    #  p_img.update_layout(plot_bgcolor="#F2F2F0",paper_bgcolor = "#F2F2F0", font = {'color': "#F1828D", 'family': "Arial"})
+    #  p_img.update_layout(plot_bgcolor="#F2F2F0",paper_bgcolor = "#cd ", font = {'color': "#F1828D", 'family': "Arial"})
     #  https://www.amazon.in/Lenovo-81NG002BIN-15-6-inch-I5-10210U-Microsoft/dp/B083PFG5HH/ref=cm_cr_arp_d_product_top?ie=UTF8
      st.subheader("Product Image")
      with st.beta_container():
@@ -188,7 +191,7 @@ def main():
     lid,l_date_time=session_id(go)
     
     #st.text("By Santosh A Patil")
-    pages = ["Home","How to"]
+    pages = ["Home","About"]
     page = st.sidebar.radio("Select Page",pages,key="page")
 
     st.sidebar.title("Key Idea")
@@ -320,6 +323,9 @@ def main():
 
         else:
             st.write("Press the above button..")
+    elif page == "About":
+        About()
+
     return None
 
 if __name__ == '__main__':
