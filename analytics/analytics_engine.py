@@ -38,6 +38,7 @@ check = Speller(lang='en')
 from analytics.vibe_meter import vibe_plot
 from analytics.sentiment_score import sentiment_par
 from analytics.word_sentiment import word_senti
+from analytics.emotion_score import emo_score
 import plotly.graph_objects as go
 
 
@@ -168,6 +169,7 @@ def analyze_engine(Reviews):
    rev_data["Review_date"]=Reviews["Review_date"]
    rev_data["text"] = Reviews[['Review_title','Review_body']].apply(lambda x: ' '.join(x), axis=1)
    rev_data=sentiment_par(rev_data)
+   rev_data=emo_score(rev_data)
    return rev_data
 
        

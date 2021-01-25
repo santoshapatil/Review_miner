@@ -36,6 +36,9 @@ from streamlit.report_thread import get_report_ctx
 import time
 import streamlit.components.v1 as components
 from skimage import io
+
+from plots.mood_plot import mood_meter
+from plots.emotion_plot import plot_emo
 #feedback form url
 #fedback form iframe <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?embedded=true" width="640" height="1051" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 # width 640px,height 1051px
@@ -118,6 +121,7 @@ def dashboard(lid,mkt,product_url):
      st.subheader("Most Common Words")
      
      rev_data=analyze_engine(data)
+     
      all_words=rev_data["words"].tolist()
 
      new_list = []
@@ -151,7 +155,89 @@ def dashboard(lid,mkt,product_url):
    
      st.subheader("Mood Meter")    
      st.info("We read the reviews for you and learnt what people vibed in it.")
-     vibe_plot(rev_data)
+
+     yind,quind,eyind,equind=vibe_plot(rev_data)
+
+     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+     by_Val=["By Year","By Quarter"]
+     mode=st.radio("Select :",by_Val)
+     st.subheader("")
+     with st.beta_container():
+      
+      if mode =="By Year":
+        year_sel=yind["year"]
+        year=st.radio("Select Year",year_sel)
+        for i1,r1,i2,r2 in zip(yind.iterrows(),eyind.iterrows()):
+            if row["year"]==year:
+                vibe_m=mood_meter(row["Polarity"])
+                emo_fig=plot_emo(row["Happy","Angry","Surprise","Sad","Fear"])
+                e1,e2=st.beta_columns(2)
+                e1.plotly_chart(vibe_m,use_container_width=True)
+                e2.plotly_chart(emo_fig,use_container_width=True)
+
+      elif mode == "By Quarter":
+        qa_sel=quind["DATE"]
+        qs=st.radio("Select Quarter",qa_sel)
+        for i1,r1,i2,r2 in zip(yind.iterrows(),equind.iterrows()):
+            if row["DATE"]==qs:
+                vibe_m=mood_meter(row["Polarity"])
+                emo_fig=plot_emo(row["Happy","Angry","Surprise","Sad","Fear"])
+                e1,e2=st.beta_columns(2)
+                e1.plotly_chart(vibe_m,use_container_width=True)
+                e2.plotly_chart(emo_fig,use_container_width=True)
+     
+     
+     fig = go.Figure(px.scatter(quind, x="DATE", y="Polarity",
+                 size='No. of Reviews', hover_data=['No. of Reviews',"Polarity"]
+            ))
+     fig.add_shape( # add a horizontal "target" line
+                 type="line", line_color="salmon", line_width=3, opacity=1, line_dash="dot",
+                  x0=0, x1=1, xref="paper", y0=av_pol, y1=av_pol, yref="y"
+                   )
+     fig.add_annotation(
+            x=quind["DATE"].iloc[-1],
+            y=av_pol,
+            xref="x",
+            yref="y",
+            text="What most people felt",
+            showarrow=True,
+            font=dict(
+                family="Courier New, monospace",
+                size=16,
+                color="#ffffff"
+                ),
+            align="center",
+            arrowhead=2,
+            arrowsize=1,
+            arrowwidth=2,
+            arrowcolor="red",
+            ax=20,
+            ay=-30,
+            bordercolor="#c7c7c7",
+            borderwidth=2,
+            borderpad=4,
+            bgcolor="#ff7f0e",
+            opacity=0.8
+            )
+
+     fig.update_xaxes(showgrid=False,showline=True, linewidth=2, linecolor='black')
+     fig.update_yaxes(showgrid=False,showline=True, linewidth=2, linecolor='black')
+
+     fig.update_layout(plot_bgcolor="#F2F2F0",paper_bgcolor = "#F2F2F0", font = {'color': "#F1828D", 'family': "Arial"})
+    #fig.update_layout(plot_bgcolor=<VALUE>)
+     st.subheader("Vibe Score in the Past:")
+     st.info("After reading the reviews,we gave a score for each one of them and here is what people have vibed across all those reviews.")
+     with st.beta_container():
+      st.plotly_chart(fig,use_container_width=True)
+
+      
+    
+    
+     if quind["Polarity"].iloc[-1]<av_pol and quind["Polarity"].iloc[-2]<av_pol:
+        st.info("Watch out!! look for an alternative as the people who bought the product in the last quarter felt the product is not upto the mark")
+     else:
+        st.info("In the last two quarters we see that the Vibe score is greater than what most people felt, so the seller has not compramised on his product expectations.")
+
      st.subheader("Vibe Score of a word")
      word_sent = st.text_input("Enter a word and we'll get the sentiment about that word in the reviews.",value="quality")
      word_sent=word_sent.lower()
