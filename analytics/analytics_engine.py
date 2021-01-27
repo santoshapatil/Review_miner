@@ -40,7 +40,7 @@ from analytics.sentiment_score import sentiment_par
 from analytics.word_sentiment import word_senti
 from analytics.emotion_score import emo_score
 import plotly.graph_objects as go
-
+import numpy as np
 
 #del this
 #from vibe_meter import vibe_plot
@@ -106,6 +106,7 @@ def spli_words(text):
 def word_list(counts_words):
   return counts_words
 
+@st.cache(persist=True, allow_output_mutation=True)
 def analyze_engine(Reviews):
   
    Reviews.dropna(subset=['Review_rating'], inplace=True)
@@ -115,7 +116,7 @@ def analyze_engine(Reviews):
    Reviews["text"] = Reviews[['Review_title','Review_body']].apply(lambda x: ' '.join(x), axis=1)
    Reviews['Review_date']= pd.to_datetime(Reviews['Review_date'])
    print("semoji,eng")
-   Reviews["text"]=Reviews['text'].apply(delete_emoji)
+  #  Reviews["text"]=Reviews['text'].apply(delete_emoji)
    Reviews['text']=Reviews['text'].apply(delete_punctuation)
    Reviews['text'].replace('', np.nan, inplace=True)
    Reviews.dropna(subset=['text'], inplace=True)
@@ -169,7 +170,9 @@ def analyze_engine(Reviews):
    rev_data["Review_date"]=Reviews["Review_date"]
    rev_data["text"] = Reviews[['Review_title','Review_body']].apply(lambda x: ' '.join(x), axis=1)
    rev_data=sentiment_par(rev_data)
+   print("emostart")
    rev_data=emo_score(rev_data)
+   print("emodone")
    return rev_data
 
        

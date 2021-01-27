@@ -6,6 +6,7 @@ def get_emo(text):
 
 def emo_score(rev_data):
     rev_data["emotion"]= rev_data["text"].apply(get_emo)
+    rev_data=rev_data.join(pd.json_normalize(rev_data['emotion']))
     return rev_data
     
     

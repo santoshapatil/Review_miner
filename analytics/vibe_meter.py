@@ -7,6 +7,7 @@ import plotly.graph_objects as go
 import plotly.express as px
 import calendar
 import datetime
+import numpy as np
 #del after checking
 from textblob import TextBlob
 
@@ -52,32 +53,33 @@ def vibe_plot(rev_data):
 
 
     yind=rev_data.pivot_table(index="year",values="Polarity",aggfunc='mean')
-    # mind=rev_data.pivot_table(index=["year","month"],values="Polarity",aggfunc='mean')
+    mind=rev_data.pivot_table(index=["year","month"],values="Polarity",aggfunc='mean')
     quind=rev_data.pivot_table(index=["year","quarter"],values="Polarity",aggfunc='mean')
     yind["No. of Reviews"]=rev_data.groupby("year",sort=False)["text"].count()
-    # mind["No. of Reviews"]=rev_data.groupby([rev_data["year"],rev_data["month"]],sort=False)["text"].count()
+    mind["No. of Reviews"]=rev_data.groupby([rev_data["year"],rev_data["month"]],sort=False)["text"].count()
     quind["No. of Reviews"]=rev_data.groupby([rev_data["year"],rev_data["quarter"]],sort=False)["text"].count()
     yind=yind.reset_index()
     quind=quind.reset_index()
-    # mind=mind.reset_index()
+    mind=mind.reset_index()
     quind['DATE'] =quind['year'].astype(str) + ' Q' + quind['quarter'].astype(str)
-    # mind["DATE"]=pd.to_datetime(mind[['year', 'month']].assign(DAY=1))
+    mind["DATE"]=pd.to_datetime(mind[['year', 'month']].assign(DAY=1))
     av_pol=mind["Polarity"].mean()
 
     
-
+    
     eyind=rev_data.pivot_table(index="year",values=["Happy","Angry","Surprise","Sad","Fear"],aggfunc=np.sum)
     # emind=rev_data.pivot_table(index=["year","month"],values=["Happy","Angry","Surprise","Sad","Fear"],aggfunc=np.sum)
     equind=rev_data.pivot_table(index=["year","quarter"],values=["Happy","Angry","Surprise","Sad","Fear"],aggfunc=np.sum)
-    eyind.round(decimals=0)  #counting the number of values for time being which is a Probablity sum hence rounding ot off needs development
-    equind.round(decimals=0)
+    eyind=eyind.round(decimals=0)  #counting the number of values for time being which is a Probablity sum hence rounding ot off needs development
+    equind=equind.round(decimals=0)
 
     eyind=eyind.reset_index()
     equind=equind.reset_index()
+    equind['DATE'] =equind['year'].astype(str) + ' Q' + equind['quarter'].astype(str)
     # emind=emind.reset_index()
 
 
-    return yind,quind,eyind,equind
+    return yind,quind,eyind,equind,av_pol
     
 
 

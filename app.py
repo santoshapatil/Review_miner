@@ -90,10 +90,15 @@ def data_bridge(mkt,product_url):
        diff=log_time(t)
        return data,p_name,pimg,error,diff
 
+def transformed_data(d):
+    da=analyze_engine(d)
+    return da
+    
 def dashboard(lid,mkt,product_url):
      data,p_name,pimg,error,diff=data_bridge(mkt,product_url)
     #  data= pd.read_csv(r"rev_warehouse.csv",index_col=False)
     #  data=data[data["session_id"]==lid]
+     print("1")
      img = io.imread(pimg)
      p_img = px.imshow(img)
      p_img.update_xaxes(showticklabels=False) # hide all the xticks
@@ -107,7 +112,7 @@ def dashboard(lid,mkt,product_url):
      st.write("We Extracted a total of ",cnt_rev)
      st.write("Extracted Reviews from "+sd+" to "+ld)
      st.write("Average Rating for the product ",round(avg_rating, 2))
-
+     print("2")
     
      st.subheader("Review ratings given by people who have written reviews about this product.")
      c1,c2 = st.beta_columns(2)
@@ -117,10 +122,11 @@ def dashboard(lid,mkt,product_url):
      with st.beta_expander('Click to minimize-->',expanded=True):
         with st.beta_container():
             st.plotly_chart(fig,use_container_width=True)
-     
+     print("3")
      st.subheader("Most Common Words")
      
-     rev_data=analyze_engine(data)
+     rev_data=transformed_data(data)
+     
      
      all_words=rev_data["words"].tolist()
 
@@ -141,7 +147,7 @@ def dashboard(lid,mkt,product_url):
    #temp_data(Reviews)
      #st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
      
-     
+     print("5") 
      Val=["5","10","15"]
      num=st.radio(label="No. of Frequent Words",options=Val,key=1)
      if num=="5":
@@ -152,25 +158,34 @@ def dashboard(lid,mkt,product_url):
      elif num=="15":
             #    words_df = pd.DataFrame(counts_words.most_common(15),columns=['words', 'count'])
                st.table(word_table(15,new_list))
-   
+     
+     
+     yind,quind,eyind,equind,av_pol=vibe_plot(rev_data)
      st.subheader("Mood Meter")    
      st.info("We read the reviews for you and learnt what people vibed in it.")
 
-     yind,quind,eyind,equind=vibe_plot(rev_data)
+     
 
-     st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
+    #  st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
      by_Val=["By Year","By Quarter"]
-     mode=st.radio("Select :",by_Val)
+     mode=st.button("Select :",by_Val)
      st.subheader("")
+
      with st.beta_container():
+      print("6")
       
       if mode =="By Year":
         year_sel=yind["year"]
         year=st.radio("Select Year",year_sel)
-        for i1,r1,i2,r2 in zip(yind.iterrows(),eyind.iterrows()):
+        for index,row in yind.iterrows():
             if row["year"]==year:
                 vibe_m=mood_meter(row["Polarity"])
-                emo_fig=plot_emo(row["Happy","Angry","Surprise","Sad","Fear"])
+                for index,row in eyind.iterrows():
+                    if row["year"]==year:
+                        f=row[["Happy","Angry","Surprise","Sad","Fear"]].to_list()
+
+                f = [int(i) for i in f]
+                emo_fig=plot_emo(f)
                 e1,e2=st.beta_columns(2)
                 e1.plotly_chart(vibe_m,use_container_width=True)
                 e2.plotly_chart(emo_fig,use_container_width=True)
@@ -178,10 +193,14 @@ def dashboard(lid,mkt,product_url):
       elif mode == "By Quarter":
         qa_sel=quind["DATE"]
         qs=st.radio("Select Quarter",qa_sel)
-        for i1,r1,i2,r2 in zip(yind.iterrows(),equind.iterrows()):
+        for index,row in quind.iterrows():
             if row["DATE"]==qs:
                 vibe_m=mood_meter(row["Polarity"])
-                emo_fig=plot_emo(row["Happy","Angry","Surprise","Sad","Fear"])
+                for index,row in equind.iterrows():
+                    if row["DATE"]==qs:
+                        f=row[["Happy","Angry","Surprise","Sad","Fear"]].to_list()
+                f = [int(i) for i in f]
+                emo_fig=plot_emo(f)
                 e1,e2=st.beta_columns(2)
                 e1.plotly_chart(vibe_m,use_container_width=True)
                 e2.plotly_chart(emo_fig,use_container_width=True)
