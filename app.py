@@ -443,7 +443,7 @@ def main():
                         #rev_warehouse(product_url,l_date_time,data)
                         
                         st.info("that's all for now")
-            else:
+        else:
                 st.text("Enter a flipkart.com starting product URL")
 
 
@@ -453,8 +453,7 @@ def main():
 
 
 
-        else:
-            st.write("Press the above button..")
+        
     elif page == "About":
         About()
 

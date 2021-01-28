@@ -21,9 +21,11 @@ def word_senti(word,df):
     v=word_emo(df)
     # st.write("Vibe Score for the word",word)
     st.subheader("")
+    st.write("The word ",word,"was mentioned in ",df.shape[0]," reviews.")
     w1,w2=st.beta_columns(2)
     w1.plotly_chart(word_mood_meter(word,polarity),use_container_width=True)
     w2.plotly_chart(word_feelings(word,v),use_container_width=True)
+    
     
 
     
