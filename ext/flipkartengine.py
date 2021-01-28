@@ -21,7 +21,8 @@ def getReview_link(s, u):
                 rev_link="https://www.flipkart.com"+rev+"&aid=overall&certifiedBuyer=false&sortOrder=MOST_RECENT"
                 nm=soup.find('h1',class_="yhB1nd")
                 p_name=nm.find("span").get_text()
-                return rev_link,p_name,error
+                pimg="https://raw.githubusercontent.com/santoshapatil/iload/main/NoP_img.png"
+                return rev_link,p_name,pimg,error
 
                 #except:
                   #rev_link="not_available"
@@ -164,7 +165,7 @@ def Review_extract(purl):
                     B = []
                     D = []
                     S = []
-                    rev_link,prd_name,error = getReview_link(st, p)
+                    rev_link,prd_name,pimg,error = getReview_link(st, p)
                     error="go"
                     if rev_link=="not_available":
                         error="error"
@@ -198,4 +199,4 @@ def Review_extract(purl):
                     Reviews["Review_rating"]= pd.to_numeric(Reviews["Review_rating"])
                     Reviews["Review_date"]=Reviews["Review_date"].apply(ago_do_date)
                     Reviews.to_csv("reviews_fkart.csv")
-                    return Reviews,prd_name,error
+                    return Reviews,prd_name,pimg,error

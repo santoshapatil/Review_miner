@@ -23,15 +23,15 @@ import string
 import time
 import collections
 from textblob import TextBlob
-from spellchecker import SpellChecker
-from autocorrect import Speller
+# from spellchecker import SpellChecker
+# from autocorrect import Speller
 from ipywidgets import widgets
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.widgets import Slider, Button, RadioButtons
-spell=Speller(lang='en')
+# spell=Speller(lang='en')
 #from autocorrect import spell
-check = Speller(lang='en')
+# check = Speller(lang='en')
 #streamlit run analytics_engine.py
 #spell = SpellChecker()
 #from temp.temp_data import temp_data
@@ -106,24 +106,29 @@ def spli_words(text):
 def word_list(counts_words):
   return counts_words
 
-@st.cache(persist=True, allow_output_mutation=True)
+
 def analyze_engine(Reviews):
   
-   Reviews.dropna(subset=['Review_rating'], inplace=True)
+  #  Reviews.dropna(subset=['Review_rating'], inplace=True)
    # review later *Review rating is removed*
 
 
    Reviews["text"] = Reviews[['Review_title','Review_body']].apply(lambda x: ' '.join(x), axis=1)
+   Reviews["text_copy"]=Reviews["text"] 
    Reviews['Review_date']= pd.to_datetime(Reviews['Review_date'])
    print("semoji,eng")
   #  Reviews["text"]=Reviews['text'].apply(delete_emoji)
    Reviews['text']=Reviews['text'].apply(delete_punctuation)
    Reviews['text'].replace('', np.nan, inplace=True)
    Reviews.dropna(subset=['text'], inplace=True)
-   Reviews['text']=Reviews['text'].apply(stemming)
+   
+   Reviews['text']=Reviews['text'].apply(delete_stopwords)
    Reviews['text'].replace('', np.nan, inplace=True)
    Reviews.dropna(subset=['text'], inplace=True)
-
+  #  Reviews['text']=Reviews['text'].apply(stemming)
+  #  Reviews['text'].replace('', np.nan, inplace=True)
+  #  Reviews.dropna(subset=['text'], inplace=True)
+    
   #  #Reviews['cl_t']=Reviews['em_t'].apply(delete_notEnglish)
   #  #Reviews['cl_b']=Reviews['em_b'].apply(delete_notEnglish)
   #  ## duplicates below delete later
@@ -163,16 +168,17 @@ def analyze_engine(Reviews):
 
    #all_words=list(Reviews['cl_t'])
    #all_words=list(Reviews['cl_b'])
-   
    Reviews["words"]=Reviews["text"].apply(spli_words)
    rev_data=pd.DataFrame()
    rev_data["words"]=Reviews["words"]
    rev_data["Review_date"]=Reviews["Review_date"]
-   rev_data["text"] = Reviews[['Review_title','Review_body']].apply(lambda x: ' '.join(x), axis=1)
+   rev_data["text"] = Reviews["text_copy"]
+   rev_data["clean_text"]=Reviews["text"]
    rev_data=sentiment_par(rev_data)
    print("emostart")
    rev_data=emo_score(rev_data)
    print("emodone")
+   rev_data["Review_rating"]=Reviews["Review_rating"]
    return rev_data
 
        

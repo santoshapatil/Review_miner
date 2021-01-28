@@ -68,6 +68,7 @@ def getReviews(url, pg):
     if page.status_code == 200:
         soup = BeautifulSoup(page.content, 'html.parser')
         r = soup.find('div', class_="a-section a-spacing-none reviews-content a-size-base")
+        star_sec=soup.find_all("div",{'data-hook': "review"})
         if r == None:
             return r_h, r_b, r_t,r_s, pg
         else:
@@ -75,8 +76,11 @@ def getReviews(url, pg):
             # ty = soup.find('div', id="cm_cr-review_list")
 
             rt = r.find_all('a',{'data-hook': "review-title"})
-            stars=r.find_all("span",class_="a-icon-alt")
+            stars=[]
+            for i in star_sec:
+                stars.append(i.find("span",class_="a-icon-alt"))
 
+            
             for i in rt:
                 if i is None:
                     r_h.append(None)

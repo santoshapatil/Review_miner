@@ -52,7 +52,9 @@ def log_time(start):
     return diff
 #from pages.home import home_page
  
-
+def transformed_data(d):
+    da=analyze_engine(d)
+    return da
 def temp_log(lid,l_date_time,mkt,product_url,ext_time,Reviews,entered_words,u_email,u_feedback):
     # temp_db=pd.DataFrame(index=None)
     temp_db=pd.read_csv(r"temp_db.csv",index_col=False)
@@ -88,14 +90,14 @@ def data_bridge(mkt,product_url):
        t=start_time()
        data,p_name,pimg,error=build_bridge(mkt,product_url)
        diff=log_time(t)
-       return data,p_name,pimg,error,diff
+       with st.spinner('Data Extracted. Running intmood.core.analytics'):
+           rev_data=transformed_data(data)
+       st.success('Done!')  
+       return rev_data,p_name,pimg,error,diff
 
-def transformed_data(d):
-    da=analyze_engine(d)
-    return da
     
 def dashboard(lid,mkt,product_url):
-     data,p_name,pimg,error,diff=data_bridge(mkt,product_url)
+     rev_data,p_name,pimg,error,diff=data_bridge(mkt,product_url)
     #  data= pd.read_csv(r"rev_warehouse.csv",index_col=False)
     #  data=data[data["session_id"]==lid]
      print("1")
@@ -108,7 +110,7 @@ def dashboard(lid,mkt,product_url):
      st.subheader("Product Image")
      with st.beta_container():
           st.plotly_chart(p_img,use_container_width=True)
-     cnt_rev, sd,ld, avg_rating, pie_fig,hist_fig,fig=DB(data)
+     cnt_rev, sd,ld, avg_rating, pie_fig,hist_fig,fig=DB(rev_data)
      st.write("We Extracted a total of ",cnt_rev)
      st.write("Extracted Reviews from "+sd+" to "+ld)
      st.write("Average Rating for the product ",round(avg_rating, 2))
@@ -125,7 +127,7 @@ def dashboard(lid,mkt,product_url):
      print("3")
      st.subheader("Most Common Words")
      
-     rev_data=transformed_data(data)
+     
      
      
      all_words=rev_data["words"].tolist()
@@ -149,7 +151,7 @@ def dashboard(lid,mkt,product_url):
      
      print("5") 
      Val=["5","10","15"]
-     num=st.radio(label="No. of Frequent Words",options=Val,key=1)
+     num=st.selectbox(label="No. of Frequent Words",options=Val,key=1,)
      if num=="5":
                st.table(word_table(5,new_list))
      elif num=="10":
@@ -162,17 +164,18 @@ def dashboard(lid,mkt,product_url):
      
      yind,quind,eyind,equind,av_pol=vibe_plot(rev_data)
      st.subheader("Mood Meter")    
-     st.info("We read the reviews for you and learnt what people vibed in it.")
-
+     st.info("We read the reviews for you and learnt what mood or feeling people had about the product")
+     st.write("We have ordered them based on particular year or quarters in a year and carefully watch what people have said in the recent quarter or year.")
+     st.write("Recent quarters represent more accurate representation of expectation you can have about the product. ")
      
 
     #  st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
      by_Val=["By Year","By Quarter"]
-     mode=st.button("Select :",by_Val)
+     mode=st.selectbox("Select :",by_Val)
      st.subheader("")
 
      with st.beta_container():
-      print("6")
+
       
       if mode =="By Year":
         year_sel=yind["year"]
@@ -270,14 +273,34 @@ def dashboard(lid,mkt,product_url):
      rev_data['text']=rev_data['text'].str.lower()
      entered_words=[]
      d=rev_data[rev_data['text'].str.contains(word_sent)]
-     print(d)
+     
      if d.empty:
          st.write("Word not present") 
      else:
          entered_words.append(word_sent)
          word_senti(word_sent,d)
-     return entered_words
+     
+    #  st.subheader("We don't want you to waste time reading reviews, incase you still want to read them,here is a smart way of reading it.")
+    #  feelings=["Happy","Angry","Surprise","Sad","Fear"]
+    #  feel=st.selectbox("Select a feeling and we'll get you the review about the product which has that feeling",feelings)
+    #  if feel=="Happy":
+    #      d=rev_data[rev_data["Happy"]==1]["text"]
+    #      st.table(d)
+    #  elif feel=="Angry":
+    #      d=rev_data[rev_data["Angry"]>0][["text","Angry"]]
+    #      st.table(d.sort_values(by="Angry",ascending=False))
+    #  elif feel=="Surprise":
+    #      d=rev_data[rev_data["Surprise"]==1]["text"]
+    #      st.table(d)
+    #  elif feel=="Sad":
+    #      d=rev_data[rev_data["Sad"]==1]["text"]
+    #      st.table(d)
+    #  elif feel=="Fear":
+    #      d=rev_data[rev_data["Fear"]==1]["text"]
+    #      st.table(d)
+     
 
+     return entered_words
 def main():
     
     
@@ -297,8 +320,8 @@ def main():
     
     #st.text("By Santosh A Patil")
     pages = ["Home","About"]
-    page = st.sidebar.radio("Select Page",pages,key="page")
-
+    # page = st.sidebar.radio("Select Page",pages,key="page")
+    page="Home"
     st.sidebar.title("Key Idea")
     st.sidebar.info(
     """
@@ -349,8 +372,8 @@ def main():
     with st.sidebar.beta_container():
             feedback=f"[![feedback](https://raw.githubusercontent.com/loadcontent/imagebox/main/3933037771600677167-48.png)](https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?usp=sf_link)"
             st.markdown(feedback,unsafe_allow_html=False)       
-    u_email=st.sidebar.text_input("Email ID",value="")
-    u_feedback=st.sidebar.text_input("Enter Feedback here",value="")    
+    u_email=""
+    u_feedback=""    
     
     
 
@@ -363,7 +386,7 @@ def main():
     if page == "Home":
         
         
-     st.title("intmood")
+     st.subheader("Select marketplace and paste the product URL.")
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
      marketplace = ["amazon.in","flipkart.com","swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"]
      c1,c2 = st.beta_columns((1,4))
@@ -377,7 +400,7 @@ def main():
         st.subheader("Amazon.in")
         # if st.button("Analyze Reviews",key=2):
         if "amazon.in" in product_url:
-                with st.spinner('Crawling Amazon to get reviews'):
+                # with st.spinner('Crawling Amazon to get reviews'):
                     data,p_name,pimg,error,ext_time=data_bridge(mkt,product_url)
                     # data=reservoir(data)
                     if error=="stop":
@@ -399,22 +422,26 @@ def main():
                 st.text("Enter a amazon.in starting product URL")
      elif mkt == "flipkart.com":
         st.subheader("flipkart.com")
-        if st.button("Analyze Reviews",key=3):
-            if "flipkart.com" in product_url:
-                with st.spinner('Crawling Flipkart to get reviews'):
+        
+        if "flipkart.com" in product_url:
+                # with st.spinner('Crawling Flipkart to get reviews'):
                     
-                    data,p_name,error=build_bridge(mkt,product_url)
+                    data,p_name,pimg,error,ext_time=data_bridge(mkt,product_url)
                     # data=reservoir(data)
                     if error=="stop":
-                        st.info("Unable to connect!! Flipkart is Not available right now")
+                        st.info("Unable to connect!! Amazon is Not available right now")
                         st.stop()
                     else:
                         st.success('Extrction Complete!')
                         st.title("Lets dig in to the product:")
                         st.info(p_name)
-                        action_log(lid,mkt,product_url)
+                        rev_warehouse(lid,product_url,l_date_time,data)
+                        action_log(lid,mkt,product_url,ext_time)
                         #(lid,product_url,l_date_time,data)
-                        rev_warehouse(product_url,l_date_time,data)
+                        entered_words=dashboard(lid,mkt,product_url)
+                        temp_log(lid,l_date_time,mkt,product_url,ext_time,data,entered_words,u_email,u_feedback)
+                        #rev_warehouse(product_url,l_date_time,data)
+                        
                         st.info("that's all for now")
             else:
                 st.text("Enter a flipkart.com starting product URL")

@@ -6,8 +6,8 @@ def build_bridge(mkt,product_url):
        data,p_name,pimg,error=amz(product_url)
        return data,p_name,pimg,error
     elif mkt=="flipkart.com":
-       data,p_name,error=flipkart(product_url)
-       return data,p_name,error
+       data,p_name,pimg,error=flipkart(product_url)
+       return data,p_name,pimg,error
 
        
     

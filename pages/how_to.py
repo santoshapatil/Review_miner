@@ -5,11 +5,11 @@ import os
 def About():
     
 
-    f=codecs.open(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\pages\test.html")
-    bod= f.read()
+    # f=codecs.open(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\pages\test.html")
+    # bod= f.read()
     # st.beta_container():
 
-    f=codecs.open(r"C:\Users\SANTOSH A PATIL\Documents\GitHub\Review_miner\pages\chetube.html")
+    f=codecs.open(r"C:\Users\Linus\Documents\GitHub\Review_miner\pages\chetube.html")
     bod= f.read()
 
 

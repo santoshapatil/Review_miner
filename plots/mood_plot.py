@@ -6,7 +6,7 @@ def mood_meter(polarity):
     value = polarity,
     mode = "gauge+number",
     #title={'text': "<h1>Vibe Meter</h1><p>Red -&gt; Poor Vibe</p><p>White -&gt; Neutral Vibe</p><p>Green -&gt; Good Vibe</p>"},
-    title = {'text':"<b>Vibe Score</b><br><span style='color: orange; font-size:10'>RED is not okay, WHITE is Neutral,GREY is Good </span>",'font': {"size": 14}
+    title = {'text':"<b>General Mood during this period</b><br><span style='color: orange; font-size:10'>RED is not okay, WHITE is Neutral,GREY is Good </span>",'font': {"size": 14}
              },
     gauge = {'axis': {'range': [-1, 1]},
              'steps' : [
@@ -18,26 +18,26 @@ def mood_meter(polarity):
         fig.add_layout_image(dict(
         source="https://raw.githubusercontent.com/loadcontent/imagebox/main/sml_pos.png",
         x=1,
-        y=0.5,
+        y=0.8,
         ))
     elif polarity <=0.2 and polarity >=-0.2 :
         fig.add_layout_image(dict(
         source="https://raw.githubusercontent.com/loadcontent/imagebox/main/sml_neu.png",
         x=1,
-        y=0.5,
+        y=0.8,
         ))
     else :
        fig.add_layout_image(
         dict(
         source="https://raw.githubusercontent.com/loadcontent/imagebox/main/sml_neg.png",
         x=1,
-        y=0.5,
+        y=0.8,
           ))
     fig.update_layout_images(dict(
         xref="paper",
         yref="paper",
-        sizex=0.5,
-        sizey=0.5,
+        sizex=0.2,
+        sizey=0.2,
         xanchor="right",
         yanchor="bottom"
      ))
