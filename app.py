@@ -35,7 +35,7 @@ from PIL import Image
 from streamlit.report_thread import get_report_ctx
 import time
 import streamlit.components.v1 as components
-from skimage import io
+# from skimage import io
 
 from plots.mood_plot import mood_meter
 from plots.emotion_plot import plot_emo
@@ -101,15 +101,15 @@ def dashboard(lid,mkt,product_url):
     #  data= pd.read_csv(r"rev_warehouse.csv",index_col=False)
     #  data=data[data["session_id"]==lid]
      print("1")
-     img = io.imread(pimg)
-     p_img = px.imshow(img)
-     p_img.update_xaxes(showticklabels=False) # hide all the xticks
-     p_img.update_yaxes(showticklabels=False)
+    #  img = io.imread(pimg)
+    #  p_img = px.imshow(img)
+    #  p_img.update_xaxes(showticklabels=False) # hide all the xticks
+    #  p_img.update_yaxes(showticklabels=False)
     #  p_img.update_layout(plot_bgcolor="#F2F2F0",paper_bgcolor = "#cd ", font = {'color': "#F1828D", 'family': "Arial"})
     #  https://www.amazon.in/Lenovo-81NG002BIN-15-6-inch-I5-10210U-Microsoft/dp/B083PFG5HH/ref=cm_cr_arp_d_product_top?ie=UTF8
      st.subheader("Product Image")
      with st.beta_container():
-          st.plotly_chart(p_img,use_container_width=True)
+          st.image(pimg,use_column_width=True)
      cnt_rev, sd,ld, avg_rating, pie_fig,hist_fig,fig=DB(rev_data)
      st.write("We Extracted a total of ",cnt_rev)
      st.write("Extracted Reviews from "+sd+" to "+ld)
