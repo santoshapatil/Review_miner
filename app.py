@@ -85,12 +85,14 @@ def img_to_bytes(img_path):
     img_bytes = Path(img_path).read_bytes()
     encoded = base64.b64encode(img_bytes).decode()
     return encoded
-@st.cache(persist=True, allow_output_mutation=True)
+@st.cache(persist=True, allow_output_mutation=True,suppress_st_warning=True)
 def data_bridge(mkt,product_url):
        t=start_time()
-       data,p_name,pimg,error=build_bridge(mkt,product_url)
+       with st.spinner('Fetching product reviews, please do not switch tabs'):
+            data,p_name,pimg,error=build_bridge(mkt,product_url)
+
        diff=log_time(t)
-       with st.spinner('Data Extracted. Running intmood.core.analytics'):
+       with st.spinner('Data Extracted !!. Running intmood.core.analytics'):
            rev_data=transformed_data(data)
        st.success('Done!')  
        return rev_data,p_name,pimg,error,diff
@@ -100,7 +102,7 @@ def dashboard(lid,mkt,product_url):
      rev_data,p_name,pimg,error,diff=data_bridge(mkt,product_url)
     #  data= pd.read_csv(r"rev_warehouse.csv",index_col=False)
     #  data=data[data["session_id"]==lid]
-     print("1")
+
     #  img = io.imread(pimg)
     #  p_img = px.imshow(img)
     #  p_img.update_xaxes(showticklabels=False) # hide all the xticks
@@ -114,7 +116,7 @@ def dashboard(lid,mkt,product_url):
      st.write("We Extracted a total of ",cnt_rev)
      st.write("Extracted Reviews from "+sd+" to "+ld)
      st.write("Average Rating for the product ",round(avg_rating, 2))
-     print("2")
+
     
      st.subheader("Review ratings given by people who have written reviews about this product.")
      c1,c2 = st.beta_columns(2)
@@ -124,7 +126,7 @@ def dashboard(lid,mkt,product_url):
      with st.beta_expander('Click to minimize-->',expanded=True):
         with st.beta_container():
             st.plotly_chart(fig,use_container_width=True)
-     print("3")
+
      st.subheader("Most Common Words")
      
      
@@ -149,7 +151,7 @@ def dashboard(lid,mkt,product_url):
    #temp_data(Reviews)
      #st.write('<style>div.row-widget.stRadio > div{flex-direction:row;}</style>', unsafe_allow_html=True)
      
-     print("5") 
+
      Val=["5","10","15"]
      num=st.selectbox(label="No. of Frequent Words",options=Val,key=1,)
      if num=="5":
@@ -258,12 +260,13 @@ def dashboard(lid,mkt,product_url):
      if quind["Polarity"].iloc[-1]<av_pol and quind["Polarity"].iloc[-2]<av_pol:
         st.info("Watch out!! look for an alternative as the people who bought the product in the last quarter felt the product is not upto the mark")
      else:
-        st.info("In the last two quarters we see that the Vibe score is greater than what most people felt, so the seller has not compramised on his product expectations.")
+        st.info("In the last quarter we see that the Vibe score is greater than what most people felt, so the seller has kept his product expections.")
 
      st.subheader("Vibe Score of a word")
-     word_sent = st.text_input("Enter a word and we'll get the sentiment about that word in the reviews.",value="quality")
+     st.info("This section will help get sentment and emotions about the product with respect to a particular product aspect like **quality**, ** price**, ** camera**, etc.")
+     st.write("We will take that word and filter every review containing that word and get you the sentiment surrounding that word. We have already filtered and found the sentment for the word **quality.** Throw in some words related to product aspect you care about and click enter.")
+     word_sent = st.text_input("Enter a word and click enter.",value="quality")
      word_sent=word_sent.lower()
-     print(word_sent)
     #  rev_data=d_bank(rev_data)
    
    #if rev_data["text"].str.contains(word_sent, regex=True) is True:
@@ -337,26 +340,26 @@ def main():
     #youtube=Image.open("./img/youtube.svg")
     
 
-    st.sidebar.subheader("Follow us on:")
-    with st.sidebar.beta_container():
-                c1,c2,c3,c4= st.beta_columns(4)
-                with c1:
-                    #insta=f"<a href='https://github.com/MarcSkovMadsen/awesome-streamlit'><img src='data:./img/instagram.svg;base64,{image_base64}'></a>"
-                    insta=f"[![instagram](https://cdn.exclaimer.com/Handbook%20Images/instagram-icon_32x32.png)](https://instagram.com/intmood_)"
-                    st.markdown(insta,unsafe_allow_html=False)
-                with c2:
-                    twit=f"[![twitter](https://cdn.exclaimer.com/Handbook%20Images/twitter-icon_32x32.png)](https://twitter.com/intmood)"
-                    st.markdown(twit,unsafe_allow_html=False)
-                with c3:
-                    linkedin=f"[![linkedin](https://cdn.exclaimer.com/Handbook%20Images/linkedin-icon_32x32.png)](https://www.linkedin.com/company/intmood)"
-                    st.markdown(linkedin,unsafe_allow_html=False)
-                with c4:
-                    youtube=f"[![youtube](https://cdn.exclaimer.com/Handbook%20Images/youtube-icon_32x32.png)](https://www.youtube.com/channel/UCZ84Qr78IKdMKtYLymu1TFw)"
-                    st.markdown(youtube,unsafe_allow_html=False)
-    st.sidebar.subheader("Feedback/Report broken link")
-    with st.sidebar.beta_container():
-            feedback=f"[![feedback](https://raw.githubusercontent.com/loadcontent/imagebox/main/3933037771600677167-48.png)](https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?usp=sf_link)"
-            st.markdown(feedback,unsafe_allow_html=False)       
+    # st.sidebar.subheader("Follow us on:")
+    # with st.sidebar.beta_container():
+    #             c1,c2,c3,c4= st.beta_columns(4)
+    #             with c1:
+    #                 #insta=f"<a href='https://github.com/MarcSkovMadsen/awesome-streamlit'><img src='data:./img/instagram.svg;base64,{image_base64}'></a>"
+    #                 insta=f"[![instagram](https://cdn.exclaimer.com/Handbook%20Images/instagram-icon_32x32.png)](https://instagram.com/intmood_)"
+    #                 st.markdown(insta,unsafe_allow_html=False)
+    #             with c2:
+    #                 twit=f"[![twitter](https://cdn.exclaimer.com/Handbook%20Images/twitter-icon_32x32.png)](https://twitter.com/intmood)"
+    #                 st.markdown(twit,unsafe_allow_html=False)
+    #             with c3:
+    #                 linkedin=f"[![linkedin](https://cdn.exclaimer.com/Handbook%20Images/linkedin-icon_32x32.png)](https://www.linkedin.com/company/intmood)"
+    #                 st.markdown(linkedin,unsafe_allow_html=False)
+    #             with c4:
+    #                 youtube=f"[![youtube](https://cdn.exclaimer.com/Handbook%20Images/youtube-icon_32x32.png)](https://www.youtube.com/channel/UCZ84Qr78IKdMKtYLymu1TFw)"
+    #                 st.markdown(youtube,unsafe_allow_html=False)
+    # st.sidebar.subheader("Feedback/Report broken link")
+    # with st.sidebar.beta_container():
+    #         feedback=f"[![feedback](https://raw.githubusercontent.com/loadcontent/imagebox/main/3933037771600677167-48.png)](https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?usp=sf_link)"
+    #         st.markdown(feedback,unsafe_allow_html=False)       
     u_email=""
     u_feedback=""    
     
@@ -415,7 +418,7 @@ def main():
 
     #  st.components.v1.html(Title_html, width=None, height=None, scrolling=False)
      st.markdown(Title_html,unsafe_allow_html=True)
-     st.subheader("Select marketplace and paste the product URL.")
+     st.subheader("Select marketplace, paste the product URL and press enter.")
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
      marketplace = ["amazon.in","flipkart.com"]
     #  ,"swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"
@@ -424,7 +427,7 @@ def main():
 
             mkt = st.selectbox(label="Select Marketplace",options= marketplace,key="marketplace")
      with c2:
-            product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B083PFG5HH")    
+            product_url = st.text_input("Enter The Product url like  https://www.amazon.in/dp/B083PFG5HH  ")    
     
      if mkt == "amazon.in":
         st.subheader("Amazon.in")
@@ -437,7 +440,7 @@ def main():
                         st.info("Unable to connect!! Amazon is Not available right now")
                         st.stop()
                     else:
-                        st.success('Extrction Complete!')
+                        
                         st.title("Lets dig in to the product:")
                         st.info(p_name)
                         rev_warehouse(lid,product_url,l_date_time,data)
@@ -462,7 +465,7 @@ def main():
                         st.info("Unable to connect!! Amazon is Not available right now")
                         st.stop()
                     else:
-                        st.success('Extrction Complete!')
+                       
                         st.title("Lets dig in to the product:")
                         st.info(p_name)
                         rev_warehouse(lid,product_url,l_date_time,data)
