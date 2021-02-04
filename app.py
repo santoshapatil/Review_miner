@@ -427,7 +427,7 @@ def main():
 
             mkt = st.selectbox(label="Select Marketplace",options= marketplace,key="marketplace")
      with c2:
-            product_url = st.text_input("Enter The Product url like  https://www.amazon.in/dp/B083PFG5HH  ")    
+            product_url = st.text_input("https://www.amazon.in/dp/B083PFG5HH ")    
     
      if mkt == "amazon.in":
         st.subheader("Amazon.in")
@@ -493,4 +493,9 @@ def main():
     return None
 
 if __name__ == '__main__':
-       main()
+       try:
+           main()
+       except:
+           st.write("Intmood is a young company running with minimal computing power, sorry for the inconvience caused and we value your time please report the URL in the link above and we will get back to you.")
+
+       
