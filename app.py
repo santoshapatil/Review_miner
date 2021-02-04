@@ -418,6 +418,7 @@ def main():
 
     #  st.components.v1.html(Title_html, width=None, height=None, scrolling=False)
      st.markdown(Title_html,unsafe_allow_html=True)
+     
      st.subheader("Select marketplace, paste the product URL and press enter.")
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
      marketplace = ["amazon.in","flipkart.com"]
@@ -451,6 +452,11 @@ def main():
                         #rev_warehouse(product_url,l_date_time,data)
                         
                         st.info("that's all for now")
+                        st.subheader("We value your feedback")
+                        with st. beta_expander(label="Click to give feedback",expanded=False):
+                            feedback="""<script src="https://static.airtable.com/js/embed/embed_snippet_v1.js"></script><iframe class="airtable-embed airtable-dynamic-height" src="https://airtable.com/embed/shrjcl3LJoscyzzzi?backgroundColor=yellow" frameborder="0" onmousewheel="" width="100%" height="1156" style="background: transparent; border: 1px solid #ccc;"></iframe>
+                                     """
+                            st.markdown(feedback,unsafe_allow_html=True)
         else:
                 st.text("Enter a amazon.in starting product URL")
      elif mkt == "flipkart.com":
@@ -476,6 +482,11 @@ def main():
                         #rev_warehouse(product_url,l_date_time,data)
                         
                         st.info("that's all for now")
+                        st.subheader("We value your feedback")
+                        with st. beta_expander(label="Click to give feedback",expanded=False):
+                            feedback="""<script src="https://static.airtable.com/js/embed/embed_snippet_v1.js"></script><iframe class="airtable-embed airtable-dynamic-height" src="https://airtable.com/embed/shrjcl3LJoscyzzzi?backgroundColor=yellow" frameborder="0" onmousewheel="" width="100%" height="1156" style="background: transparent; border: 1px solid #ccc;"></iframe>
+                                     """
+                            st.markdown(feedback,unsafe_allow_html=True)
         else:
                 st.text("Enter a flipkart.com starting product URL")
 
