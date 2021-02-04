@@ -322,23 +322,8 @@ def main():
     pages = ["Home","About"]
     # page = st.sidebar.radio("Select Page",pages,key="page")
     page="Home"
-    st.sidebar.title("Key Idea")
-    st.sidebar.info(
-    """
-        Know what people felt about what you are about to buy
-
-    """
-    )
-    st.sidebar.title("About")
-    st.sidebar.info(
-        """
-        This is a Web ML App to help you make a data driven decision before you
-        click purchase button while shopping online.
-        We sincerely thank Amazon,Flipkart and other digital market places
-        to let this app get reviews from their website."
-
-        """
-        )
+    
+    
     
     
     
@@ -384,17 +369,62 @@ def main():
 
     
     if page == "Home":
-        
-        
+     Title_html = """
+
+
+<head>
+<style> 
+#example1 {
+  border: 2px solid red;
+  padding: 10px;
+  border-radius: 25px;
+}
+
+
+</style>
+</head>
+<body>
+
+<h3>About</h3>
+<div id="example1">
+  <p>This is a Web ML App to help you make a data driven decision before you
+        click purchase button while shopping online.
+        <br>We sincerely thank Amazon,Flipkart and other digital market places
+        to let this app get reviews from their website.<br/></p>
+</div>
+
+<h3>Key Idea</h3>
+<div id="example2">
+  <p>Know what people felt about what you are about to buy.</p>
+</div>
+
+</body>
+
+"""
+ 
+
+
+
+
+
+
+
+
+
+
+
+    #  st.components.v1.html(Title_html, width=None, height=None, scrolling=False)
+     st.markdown(Title_html,unsafe_allow_html=True)
      st.subheader("Select marketplace and paste the product URL.")
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
-     marketplace = ["amazon.in","flipkart.com","swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"]
+     marketplace = ["amazon.in","flipkart.com"]
+    #  ,"swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"
      c1,c2 = st.beta_columns((1,4))
      with c1:
 
             mkt = st.selectbox(label="Select Marketplace",options= marketplace,key="marketplace")
      with c2:
-            product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B07JWV47JW]")    
+            product_url = st.text_input("Enter The Product url [Eg:https://www.amazon.in/dp/B083PFG5HH")    
     
      if mkt == "amazon.in":
         st.subheader("Amazon.in")
