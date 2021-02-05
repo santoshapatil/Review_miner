@@ -43,6 +43,19 @@ from plots.emotion_plot import plot_emo
 #fedback form iframe <iframe src="https://docs.google.com/forms/d/e/1FAIpQLSfEkP5xHG9hIEM1iXXmdHnHSaFkqbuhuXeT8EDP4BsI33joaA/viewform?embedded=true" width="640" height="1051" frameborder="0" marginheight="0" marginwidth="0">Loading…</iframe>
 # width 640px,height 1051px
 #  https://forms.gle/FhasqkRhHiAG5Put5
+
+def feedback_form():
+    st.subheader("We value your feedback")
+#     st.markdown(
+#     """<a style='display: block; text-align: center;' href="">feedback</a>
+#     """,
+#     unsafe_allow_html=True,
+# )   
+    st.write("Click this [link](https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAADgGeC9UQVVCTENWQ0ZRQ04zUlZVOEtKMDQ2TUtQMC4u)")
+    # with st. beta_expander(label="Click to give feedback",expanded=False):
+    #                         feedback="""<iframe width="100%" height= "1000px" src= "https://forms.office.com/Pages/ResponsePage.aspx?id=DQSIkWdsW0yxEjajBLZtrQAAAAAAAAAAAAMAADgGeC9UQVVCTENWQ0ZRQ04zUlZVOEtKMDQ2TUtQMC4u&embed=true" frameborder= "0" marginwidth= "0" marginheight= "0" style= "border: none; max-width:100%; max-height:100vh" allowfullscreen webkitallowfullscreen mozallowfullscreen msallowfullscreen> </iframe>"""
+    #                         st.markdown(feedback,unsafe_allow_html=True)
+
 def start_time():
     start=time.time()
     return start 
@@ -88,11 +101,11 @@ def img_to_bytes(img_path):
 @st.cache(persist=True, allow_output_mutation=True,suppress_st_warning=True)
 def data_bridge(mkt,product_url):
        t=start_time()
-       with st.spinner('Fetching product reviews, please do not switch tabs'):
+       with st.spinner('Fetching product reviews, please do not switch tabs.'):
             data,p_name,pimg,error=build_bridge(mkt,product_url)
 
        diff=log_time(t)
-       with st.spinner('Data Extracted !!. Running intmood.core.analytics'):
+       with st.spinner('We collected all the data and we are reading all of it; We are running with minimal computational power and are constantly upgrading to make it more effecient, We value you patience'):
            rev_data=transformed_data(data)
        st.success('Done!')  
        return rev_data,p_name,pimg,error,diff
@@ -418,7 +431,6 @@ def main():
 
     #  st.components.v1.html(Title_html, width=None, height=None, scrolling=False)
      st.markdown(Title_html,unsafe_allow_html=True)
-     
      st.subheader("Select marketplace, paste the product URL and press enter.")
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
      marketplace = ["amazon.in","flipkart.com"]
@@ -452,11 +464,7 @@ def main():
                         #rev_warehouse(product_url,l_date_time,data)
                         
                         st.info("that's all for now")
-                        st.subheader("We value your feedback")
-                        with st. beta_expander(label="Click to give feedback",expanded=False):
-                            feedback="""<script src="https://static.airtable.com/js/embed/embed_snippet_v1.js"></script><iframe class="airtable-embed airtable-dynamic-height" src="https://airtable.com/embed/shrjcl3LJoscyzzzi?backgroundColor=yellow" frameborder="0" onmousewheel="" width="100%" height="1156" style="background: transparent; border: 1px solid #ccc;"></iframe>
-                                     """
-                            st.markdown(feedback,unsafe_allow_html=True)
+                        feedback_form()
         else:
                 st.text("Enter a amazon.in starting product URL")
      elif mkt == "flipkart.com":
@@ -482,11 +490,8 @@ def main():
                         #rev_warehouse(product_url,l_date_time,data)
                         
                         st.info("that's all for now")
-                        st.subheader("We value your feedback")
-                        with st. beta_expander(label="Click to give feedback",expanded=False):
-                            feedback="""<script src="https://static.airtable.com/js/embed/embed_snippet_v1.js"></script><iframe class="airtable-embed airtable-dynamic-height" src="https://airtable.com/embed/shrjcl3LJoscyzzzi?backgroundColor=yellow" frameborder="0" onmousewheel="" width="100%" height="1156" style="background: transparent; border: 1px solid #ccc;"></iframe>
-                                     """
-                            st.markdown(feedback,unsafe_allow_html=True)
+                        feedback_form()
+                        
         else:
                 st.text("Enter a flipkart.com starting product URL")
 
@@ -507,6 +512,6 @@ if __name__ == '__main__':
        try:
            main()
        except:
-           st.write("Intmood is a young company running with minimal computing power, sorry for the inconvience caused and we value your time please report the URL in the link above and we will get back to you.")
+           st.write("Intmood is a young company running with minimal computing power, sorry for the inconvience caused and we value your time please report this URL in the link above and we will get back to you.")
 
        
