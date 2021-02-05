@@ -14,33 +14,33 @@ def mood_meter(polarity):
                   {'range': [-0.2,0.2], 'color': "white",'name':"Not Okay"},
                   {'range': [0.2, 1], 'color': "lightgray",'name':"Not Okay"}]
              }))
-    if polarity >0.2:
-        fig.add_layout_image(dict(
-        source="https://raw.githubusercontent.com/loadcontent/imagebox/main/sml_pos.png",
-        x=1,
-        y=0.8,
-        ))
-    elif polarity <=0.2 and polarity >=-0.2 :
-        fig.add_layout_image(dict(
-        source="https://raw.githubusercontent.com/loadcontent/imagebox/main/sml_neu.png",
-        x=1,
-        y=0.8,
-        ))
-    else :
-       fig.add_layout_image(
-        dict(
-        source="https://raw.githubusercontent.com/loadcontent/imagebox/main/sml_neg.png",
-        x=1,
-        y=0.8,
-          ))
-    fig.update_layout_images(dict(
-        xref="paper",
-        yref="paper",
-        sizex=0.2,
-        sizey=0.2,
-        xanchor="right",
-        yanchor="bottom"
-     ))
+    # if polarity >0.2:
+    #     fig.add_layout_image(dict(
+    #     source="https://raw.githubusercontent.com/loadcontent/imagebox/main/sml_pos.png",
+    #     x=1,
+    #     y=0.8,
+    #     ))
+    # elif polarity <=0.2 and polarity >=-0.2 :
+    #     fig.add_layout_image(dict(
+    #     source="https://raw.githubusercontent.com/loadcontent/imagebox/main/sml_neu.png",
+    #     x=1,
+    #     y=0.8,
+    #     ))
+    # else :
+    #    fig.add_layout_image(
+    #     dict(
+    #     source="https://raw.githubusercontent.com/loadcontent/imagebox/main/sml_neg.png",
+    #     x=1,
+    #     y=0.8,
+    #       ))
+    # fig.update_layout_images(dict(
+    #     xref="paper",
+    #     yref="paper",
+    #     sizex=0.2,
+    #     sizey=0.2,
+    #     xanchor="right",
+    #     yanchor="bottom"
+    #  ))
     fig.update_layout(paper_bgcolor = "#F2F2F0", font = {'color': "darkblue", 'family': "Arial"})
     return fig
 
