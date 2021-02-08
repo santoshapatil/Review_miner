@@ -1,3 +1,4 @@
+<<<<<<< Updated upstream
 
 from bs4 import BeautifulSoup
 import requests
@@ -516,3 +517,5 @@ if __name__ == '__main__':
            st.write("Intmood is a young company running with minimal computing power, sorry for the inconvience caused and we value your time please report this URL in the link above and we will get back to you.")
 
        
+=======
+>>>>>>> Stashed changes
