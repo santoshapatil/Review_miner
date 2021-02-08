@@ -477,7 +477,7 @@ def main():
                     data,p_name,pimg,error,ext_time=data_bridge(mkt,product_url)
                     # data=reservoir(data)
                     if error=="stop":
-                        st.info("Unable to connect!! Amazon is Not available right now")
+                        st.info("Unable to connect!! Flipkart is Not available right now")
                         st.stop()
                     else:
                        
