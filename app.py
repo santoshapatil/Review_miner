@@ -513,9 +513,9 @@ def main():
     return None
 
 if __name__ == '__main__':
-    #    try:
+       try:
            main()
-    #    except:
-    #        st.write("Intmood is a young company running with minimal computing power, sorry for the inconvience caused and we value your time please report this URL in the link above and we will get back to you.")
+       except:
+           st.write("Intmood is a young company running with minimal computing power, sorry for the inconvience caused and we value your time please report this URL in the link above and we will get back to you.")
 
        
