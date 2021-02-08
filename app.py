@@ -490,7 +490,7 @@ def main():
                         temp_log(lid,l_date_time,mkt,product_url,ext_time,data,entered_words,u_email,u_feedback)
                         #rev_warehouse(product_url,l_date_time,data)
                         
-                        st.info("that's all for now")
+                        st.info("That's all for now")
                         feedback_form()
                         
         else:
