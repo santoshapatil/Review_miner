@@ -1,0 +1,47 @@
+<html>
+    <head>
+        <style>
+            html body iframe {
+                height: 100%;
+                width: 92%;
+            }
+            body {
+                border: 0;
+                margin: 0;
+            }
+            iframe {
+                position:fixed;
+                top:50;
+                left:0;
+                bottom:0;
+                right:0;
+                border:none;
+                margin:0;
+                padding:0;
+                overflow:hidden;
+                z-index:999999;
+            }
+           
+        .iframe-container{
+                         min-height:100px;
+                         background:#fff url("https://raw.githubusercontent.com/intmood/intmood.github.io/main/load%20content/final_load.gif") no-repeat 50% top !important;
+                                }
+
+
+
+
+        </style>
+
+        
+
+    
+    </head>
+    <body>
+
+        <div class="iframe-container">
+           <iframe src="https://draft-app-now.herokuapp.com/"
+              frameborder="0"  seamless="seamless" />
+         </div>
+
+    </body>
+</html>
