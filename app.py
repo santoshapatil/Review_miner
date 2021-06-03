@@ -434,7 +434,7 @@ def main():
      st.markdown(Title_html,unsafe_allow_html=True)
      st.subheader("Select marketplace, paste the product URL and press enter.")
         #st.text("https://www.amazon.in/Brayden-Portable-Blender-Rechargeable-Transparent/dp/B07NS898HJ/ref=cm_cr_arp_d_product_top?ie=UTF8")
-     marketplace = ["amazon.in","flipkart.com"]
+     marketplace = ["flipkart.com","amazon.in"]
     #  ,"swiggy.com","zomato.com","oyorooms.com","rottentomatoes.com","mynrta.com"
      c1,c2 = st.beta_columns((1,4))
      with c1:
